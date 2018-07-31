@@ -55,20 +55,20 @@ public class BluetoothUtil {
             return null;
         }
 
-        String mac = bluetoothMac.substring(0, 2) + ":";
-        mac += bluetoothMac.substring(2, 4) + ":";
-        mac += bluetoothMac.substring(4, 6) + ":";
-        mac += bluetoothMac.substring(6, 8) + ":";
-        mac += bluetoothMac.substring(8, 10) + ":";
-        mac += bluetoothMac.substring(10, 12);
+//        String mac = bluetoothMac.substring(0, 2) + ":";
+//        mac += bluetoothMac.substring(2, 4) + ":";
+//        mac += bluetoothMac.substring(4, 6) + ":";
+//        mac += bluetoothMac.substring(6, 8) + ":";
+//        mac += bluetoothMac.substring(8, 10) + ":";
+//        mac += bluetoothMac.substring(10, 12);
 
-        LogUtil.d("mac:" + mac);
+        LogUtil.d("mac:" + bluetoothMac);
 //        try {
 //            mBluetoothAdapter.listenUsingRfcommWithServiceRecord("FEE7", UUID.fromString("FEE7"));
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        return mBluetoothAdapter.getRemoteDevice(mac);
+        return mBluetoothAdapter.getRemoteDevice(bluetoothMac);
     }
 
 

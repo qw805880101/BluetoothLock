@@ -3,10 +3,14 @@ package com.tc.bluetoothlock.activity;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -60,6 +64,8 @@ public class MainActivity extends BaseActivity {
 
     private BluetoothReceiver mBluetoothReceiver;
 
+    private LockInfo lockInfo;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -73,7 +79,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 boolean i = mBluetoothUtil.startSeachBlue();
-                if (i){
+                if (i) {
                     LogUtil.d("开始搜索蓝牙");
                 }
             }
@@ -100,7 +106,17 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initdata() {
-        start("100000000");
+//        start("100000000");
+        final BluetoothDevice mBluetoothDevice = mBluetoothUtil.getBluetoothDevice("C8:DF:84:2E:6C:BC");
+
+        if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    startConnect(mBluetoothDevice);
+                }
+            }).start();
+        }
     }
 
     private void requestCameraPerm() {
@@ -132,15 +148,17 @@ public class MainActivity extends BaseActivity {
             public void call(BaseBeanInfo<BaseBeanClass<LockInfo>> info) {
                 stopProgressDialog();
                 if (info.getCode() == 200 && info.getMsg().equals("SUCCESS")) {
-                    LockInfo lockInfo = info.getData().getReturnData();
+                    lockInfo = info.getData().getReturnData();
 
-                    BluetoothDevice mBluetoothDevice = mBluetoothUtil.getBluetoothDevice(lockInfo.getLockBluetoothMac());
-                    LogUtil.d("12:"+mBluetoothDevice.getBondState());
-                    mBluetoothDevice.createBond();
-                    try {
-                        mBluetoothDevice.createRfcommSocketToServiceRecord(UUID.randomUUID());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    final BluetoothDevice mBluetoothDevice = mBluetoothUtil.getBluetoothDevice(lockInfo.getLockBluetoothMac());
+
+                    if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                startConnect(mBluetoothDevice);
+                            }
+                        }).start();
                     }
 
                 } else {
@@ -148,6 +166,49 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }, this));
+    }
+
+    public void startConnect(BluetoothDevice mBluetoothDevice) {
+//        try {
+//            String uuid = lockInfo.getNewKey();
+
+            mBluetoothDevice.connectGatt(MainActivity.this, true, new BluetoothGattCallback() {
+                @Override
+                public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+                    super.onPhyUpdate(gatt, txPhy, rxPhy, status);
+                }
+
+                @Override
+                public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                    super.onConnectionStateChange(gatt, status, newState);
+                    LogUtil.d("status:" + status);
+                }
+            });
+
+
+//            uuid = uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-"
+//                    + uuid.substring(12, 16) + "-" + uuid.substring(16, 20) + "-" + uuid.substring(20, uuid.length());
+//            LogUtil.d("uuid:" + uuid);
+//            final BluetoothSocket mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString("0000fee7-0000-1000-8000-00805f9b34fb"));
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    startConnect(mBluetoothSocket);
+//                }
+//            }).start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    public void startConnect(BluetoothSocket mBluetoothSocket) {
+        try {
+            mBluetoothSocket.connect();
+            boolean isConnect = mBluetoothSocket.isConnected();
+            LogUtil.d("isConnect:" + isConnect);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick({R.id.bt_scan, R.id.bt_open_lock, R.id.bt_wifi, R.id.bt_fingerprint, R.id.bt_password})
