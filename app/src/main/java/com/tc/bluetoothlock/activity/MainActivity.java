@@ -1,44 +1,52 @@
 package com.tc.bluetoothlock.activity;
 
 import android.Manifest;
+import android.Manifest.permission;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.Button;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.psylife.wrmvplibrary.utils.LogUtil;
+import com.psylife.wrmvplibrary.utils.TitleBuilder;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothReceiver;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothUtil;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.SearchBluetoothInterface;
+import com.tc.bluetoothlock.adapter.LockAdapter;
 import com.tc.bluetoothlock.adapter.MyBluetoothAdapter;
 import com.tc.bluetoothlock.base.BaseActivity;
 import com.tc.bluetoothlock.bean.BaseBeanClass;
 import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.bean.LockInfo;
+import com.tc.bluetoothlock.view.InterestSpaceItemDecoration;
+import com.tc.bluetoothlock.view.InterestSpaceItemDecorationList;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.github.xudaojie.qrcodelib.CaptureActivity;
 import okhttp3.MediaType;
@@ -48,33 +56,38 @@ import rx.functions.Action1;
 
 import static android.os.Build.VERSION_CODES.M;
 
-public class MainActivity extends BaseActivity implements SearchBluetoothInterface {
+public class MainActivity extends BaseActivity implements SearchBluetoothInterface, OnClickListener {
 
     public static final int EXTERNAL_STORAGE_REQ_CAMERA_CODE = 10;
     public static final int REQUEST_QR_CODE = 101;
 
-    @BindView(R.id.bt_scan)
-    Button btScan;
-    @BindView(R.id.bt_open_lock)
-    Button btOpenLock;
-    @BindView(R.id.bt_wifi)
-    Button btWifi;
-    @BindView(R.id.bt_fingerprint)
-    Button btFingerprint;
-    @BindView(R.id.bt_password)
-    Button btPassword;
-    @BindView(R.id.list_item)
-    RecyclerView mBluetoothList;
+    @BindView(R.id.recycler_lock_list)
+    RecyclerView mLockList;
+    @BindView(R.id.lin_add_lock)
+    LinearLayout mLinAddLock;
 
+    /* 蓝牙工具类 */
     private BluetoothUtil mBluetoothUtil;
 
+    /* 蓝牙广播 */
     private BluetoothReceiver mBluetoothReceiver;
 
+    /* 蓝牙列表 */
     private MyBluetoothAdapter mMyBluetoothAdapter;
 
     List<BluetoothDevice> mBluetoothDevices = new ArrayList<>();
 
+    /* 锁信息 */
     private LockInfo lockInfo;
+
+    private TitleBuilder mTitleBuilder;
+
+    private LockAdapter mLockAdapter;
+
+    @Override
+    public View getTitleView() {
+        return getTitleBuilder().build();
+    }
 
     @Override
     public int getLayoutId() {
@@ -88,13 +101,41 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
         mMyBluetoothAdapter = new MyBluetoothAdapter(this, mBluetoothDevices);
 
-        mBluetoothList.setLayoutManager(new LinearLayoutManager(this));
-        mBluetoothList.setAdapter(mMyBluetoothAdapter);
+        mLinAddLock.setOnClickListener(this);
 
+        List<LockInfo> lockInfos = new ArrayList<>();
+
+        for (int i = 0; i < 1; i++) {
+            LockInfo lockInfo = new LockInfo();
+            lockInfo.setId("" + i * 10);
+            lockInfos.add(lockInfo);
+        }
+        mLockAdapter = new LockAdapter(lockInfos);
+
+        mLinAddLock.setVisibility(View.GONE);
+        mLockList.setLayoutManager(new LinearLayoutManager(this));
+        mLockList.addItemDecoration(new InterestSpaceItemDecorationList(40));
+        mLockList.setAdapter(mLockAdapter);
     }
 
     @Override
     public void initdata() {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == mLinAddLock) {
+            requestCameraPerm();
+        }
+
+        if (view == mTitleBuilder.getIvLeft()) {
+            ToastUtils.showToast(this, "点我干啥");
+        }
+
+        if (view == mTitleBuilder.getIvRight()) {
+            ToastUtils.showToast(this, "点我弄啥~");
+        }
 
     }
 
@@ -120,11 +161,11 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
      * 请求二维码拍照
      */
     private void requestCameraPerm() {
-        if (android.os.Build.VERSION.SDK_INT >= M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (VERSION.SDK_INT >= M) {
+            if (ContextCompat.checkSelfPermission(this, permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 //进行权限请求
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CAMERA},
+                        new String[]{permission.CAMERA},
                         EXTERNAL_STORAGE_REQ_CAMERA_CODE);
             } else {
                 Intent i = new Intent(this, CaptureActivity.class);
@@ -165,23 +206,6 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
                 }
             }
         }, this));
-    }
-
-    @OnClick({R.id.bt_scan, R.id.bt_open_lock, R.id.bt_wifi, R.id.bt_fingerprint, R.id.bt_password})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.bt_scan:
-                requestCameraPerm();
-                break;
-            case R.id.bt_open_lock:
-                break;
-            case R.id.bt_wifi:
-                break;
-            case R.id.bt_fingerprint:
-                break;
-            case R.id.bt_password:
-                break;
-        }
     }
 
     @Override
@@ -241,4 +265,23 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         mBluetoothUtil.startConnectBluetooth(mBluetoothDevices);
     }
 
+    /**
+     * 初始化标题栏信息
+     *
+     * @return
+     */
+    private TitleBuilder getTitleBuilder() {
+        mTitleBuilder = new TitleBuilder(this);
+        mTitleBuilder.setTitleTextColor(this, R.color.white);
+        SpannableString spannableString = new SpannableString(this.getResources().getString(R.string.e_home));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(this.getResources().getColor(R.color.txt_0577fe));
+        spannableString.setSpan(colorSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        mTitleBuilder.getTvTitle().setText(spannableString);
+        mTitleBuilder.setTitleBgRes(R.color.bg_151519);
+        mTitleBuilder.setLeftImage(R.mipmap.nav_icon_personal);
+        mTitleBuilder.setLeftOnClickListener(this);
+        mTitleBuilder.setRightImage(R.mipmap.nav_icon_add);
+        mTitleBuilder.setRightOnClickListener(this);
+        return mTitleBuilder;
+    }
 }

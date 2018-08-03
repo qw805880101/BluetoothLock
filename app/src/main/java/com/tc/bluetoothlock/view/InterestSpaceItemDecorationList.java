@@ -12,11 +12,9 @@ import android.view.View;
 public class InterestSpaceItemDecorationList extends RecyclerView.ItemDecoration {
 
     private int space;
-    private int size;
 
-    public InterestSpaceItemDecorationList(int space, int size) {
+    public InterestSpaceItemDecorationList(int space) {
         this.space = space;
-        this.size = size;
     }
 
     @Override

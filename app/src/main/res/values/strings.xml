@@ -13,4 +13,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- 首页 -->
+    <string name="add_lock">添加智能锁</string>
+    <string name="e_home">Ehome</string>
+
 </resources>

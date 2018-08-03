@@ -4,7 +4,9 @@ import com.psylife.wrmvplibrary.RxManager;
 import com.psylife.wrmvplibrary.base.WRBaseActivity;
 import com.psylife.wrmvplibrary.data.net.RxService;
 import com.psylife.wrmvplibrary.utils.LogUtil;
+import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
+import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.api.Api;
 
 import rx.functions.Action1;
@@ -18,6 +20,10 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
     public Api mApi = RxService.createApi(Api.class);
 
     public RxManager mRxManager = new RxManager();
+
+    public void setStatusBarColor() {
+        StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
+    }
 
     /**
      * 显示错误日志
