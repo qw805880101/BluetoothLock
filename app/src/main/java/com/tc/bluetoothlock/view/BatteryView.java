@@ -71,14 +71,14 @@ public class BatteryView extends View {
         mSrcRect = new Rect(0, 0, bitmap.getWidth(), mTotalHeight);
         mDestRect = new Rect(0, 0, bitmap.getWidth(), mTotalHeight);
         canvas.drawBitmap(bitmap, mSrcRect, mDestRect, mPaint);
-        int a = (int) (battery / bitmap.getWidth() * bitmap.getWidth());
+        int a = (int) (battery / 100.0 * bitmap.getWidth());
         mPaint.setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.txt_1d79ea), PorterDuff.Mode.SRC_IN));
         mSrcRect = new Rect(0, 0, a, mTotalHeight);
         mDestRect = new Rect(0, 0, a, mTotalHeight);
         canvas.drawBitmap(bitmap, mSrcRect, mDestRect, mPaint);
     }
 
-    public int getW(){
+    public int getW() {
         return mTotalWidth;
     }
 
