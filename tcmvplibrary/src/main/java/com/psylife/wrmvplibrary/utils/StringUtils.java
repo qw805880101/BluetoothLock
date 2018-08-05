@@ -18,6 +18,16 @@ public class StringUtils {
         return str == null || str.length() == 0;
     }
 
+    /**
+     * 验证手机号
+     * @param phoneNum
+     * @return
+     */
+    public static boolean isPhoneNum(String phoneNum) {
+        String pattern = "^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\\d{8}$";
+        return phoneNum.matches(pattern);
+    }
+
     public static String getMoney(float cost) {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         return "￥" + decimalFormat.format(cost);

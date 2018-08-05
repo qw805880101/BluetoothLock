@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.psylife.wrmvplibrary.utils.LogUtil;
+import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.TitleBuilder;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
@@ -83,6 +84,10 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     private TitleBuilder mTitleBuilder;
 
     private LockAdapter mLockAdapter;
+
+    public void setStatusBarColor() {
+        StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
+    }
 
     @Override
     public View getTitleView() {
@@ -187,13 +192,13 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         Map map = new HashMap();
         map.put("lockNo", lockNo);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSON.toJSONString(map));
-        Observable<BaseBeanInfo<BaseBeanClass<LockInfo>>> register = mApi.getLockInfo(requestBody).compose(RxUtil.<BaseBeanInfo<BaseBeanClass<LockInfo>>>rxSchedulerHelper());
-        mRxManager.add(register.subscribe(new Action1<BaseBeanInfo<BaseBeanClass<LockInfo>>>() {
+        Observable<BaseBeanInfo<LockInfo>> getLockInfo = mApi.getLockInfo(requestBody).compose(RxUtil.<BaseBeanInfo<LockInfo>>rxSchedulerHelper());
+        mRxManager.add(getLockInfo.subscribe(new Action1<BaseBeanInfo<LockInfo>>() {
             @Override
-            public void call(BaseBeanInfo<BaseBeanClass<LockInfo>> info) {
+            public void call(BaseBeanInfo<LockInfo> info) {
                 stopProgressDialog();
                 if (info.getCode() == 200 && info.getMsg().equals("SUCCESS")) {
-                    lockInfo = info.getData().getReturnData();
+                    lockInfo = info.getData();
 
                     if (mBluetoothUtil.startSeachBlue()) {
                         Toast.makeText(mContext, "开始搜索蓝牙, 请稍后", Toast.LENGTH_SHORT).show();

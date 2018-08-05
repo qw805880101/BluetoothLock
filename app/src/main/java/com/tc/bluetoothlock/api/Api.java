@@ -3,6 +3,7 @@ package com.tc.bluetoothlock.api;
 import com.tc.bluetoothlock.bean.BaseBeanClass;
 import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.bean.LockInfo;
+import com.tc.bluetoothlock.bean.LoginInfo;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -16,12 +17,36 @@ import rx.Observable;
 public interface Api {
 
     /**
-     * 登录接口
+     * 获取锁信息
      *
      * @return
      */
     @POST("get/lockInfo")
-    Observable<BaseBeanInfo<BaseBeanClass<LockInfo>>> getLockInfo(@Body RequestBody file);
+    Observable<BaseBeanInfo<LockInfo>> getLockInfo(@Body RequestBody file);
+
+    /**
+     * 注册
+     *
+     * @return
+     */
+    @POST("user/register")
+    Observable<BaseBeanInfo> register(@Body RequestBody file);
+
+    /**
+     * 发送短信验证码
+     *
+     * @return
+     */
+    @POST("user/verificationCode")
+    Observable<BaseBeanInfo> getVerifyingCode(@Body RequestBody file);
+
+    /**
+     * 登录
+     *
+     * @return
+     */
+    @POST("user/login")
+    Observable<BaseBeanInfo<LoginInfo>> login(@Body RequestBody file);
 //
 //    /**
 //     * 获取验证码

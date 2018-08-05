@@ -1,5 +1,7 @@
 package com.tc.bluetoothlock.base;
 
+import android.view.View;
+
 import com.psylife.wrmvplibrary.RxManager;
 import com.psylife.wrmvplibrary.base.WRBaseActivity;
 import com.psylife.wrmvplibrary.data.net.RxService;
@@ -22,8 +24,14 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
     public RxManager mRxManager = new RxManager();
 
     public void setStatusBarColor() {
-        StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
+        StatusBarUtil.setTransparent(this);
     }
+
+    @Override
+    public View getTitleView() {
+        return null;
+    }
+
 
     /**
      * 显示错误日志
