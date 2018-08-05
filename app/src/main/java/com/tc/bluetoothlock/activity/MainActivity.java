@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
     @Override
     public void initdata() {
-
+        register();
     }
 
     @Override
@@ -140,13 +140,12 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
         if (view == mTitleBuilder.getIvRight()) {
             ToastUtils.showToast(this, "点我弄啥~");
+            requestCameraPerm();
         }
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void register(){
         /* 注册监听蓝牙广播 */
         mBluetoothReceiver = new BluetoothReceiver(this);
         //需要过滤多个动作，则调用IntentFilter对象的addAction添加新动作
@@ -157,8 +156,8 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(mBluetoothReceiver);
     }
 
@@ -228,11 +227,10 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     public void searchSuccess(BluetoothDevice mBluetoothDevices) {
         String mac = mBluetoothDevices.getAddress().replace(":", "");
         LogUtil.d("搜索:" + mac);
-        if (mac.equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
-            unregisterReceiver(mBluetoothReceiver);
-            LogUtil.d("搜索到锁了，关闭搜索广播");
-            connectBluetooth(mBluetoothDevices);
-        }
+//        if (mac.equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
+//            LogUtil.d("搜索到锁了，关闭搜索广播");
+//            connectBluetooth(mBluetoothDevices);
+//        }
     }
 
     /**
