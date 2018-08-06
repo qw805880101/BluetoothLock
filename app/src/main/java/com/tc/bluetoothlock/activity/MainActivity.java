@@ -67,9 +67,6 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     @BindView(R.id.lin_add_lock)
     LinearLayout mLinAddLock;
 
-    /* 蓝牙工具类 */
-    private BluetoothUtil mBluetoothUtil;
-
     /* 蓝牙广播 */
     private BluetoothReceiver mBluetoothReceiver;
 
@@ -84,6 +81,9 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     private TitleBuilder mTitleBuilder;
 
     private LockAdapter mLockAdapter;
+
+    //是否搜索到锁
+    boolean isSearchLock = false;
 
     public void setStatusBarColor() {
         StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
@@ -101,8 +101,6 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
-        mBluetoothUtil = BluetoothUtil.getBluetoothUtil(this);
 
         mMyBluetoothAdapter = new MyBluetoothAdapter(this, mBluetoothDevices);
 
@@ -140,7 +138,8 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
         if (view == mTitleBuilder.getIvRight()) {
             ToastUtils.showToast(this, "点我弄啥~");
-            requestCameraPerm();
+//            requestCameraPerm();
+            start("100000000");
         }
 
     }
@@ -227,10 +226,10 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     public void searchSuccess(BluetoothDevice mBluetoothDevices) {
         String mac = mBluetoothDevices.getAddress().replace(":", "");
         LogUtil.d("搜索:" + mac);
-//        if (mac.equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
-//            LogUtil.d("搜索到锁了，关闭搜索广播");
-//            connectBluetooth(mBluetoothDevices);
-//        }
+        if (mac.equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
+            LogUtil.d("搜索到锁了");
+            connectBluetooth(mBluetoothDevices);
+        }
     }
 
     /**
@@ -241,21 +240,18 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     @Override
     public void searchFinish(List<BluetoothDevice> mBluetoothDevices) {
         mMyBluetoothAdapter.setNewBluetoothDevices(mBluetoothDevices);
-        boolean isSearch = false;
         BluetoothDevice mBluetoothDevice = null;
-        for (BluetoothDevice s : mBluetoothDevices) {
-            if ((s.getAddress().replace(":", "")).equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
-                LogUtil.d("搜索到锁了，关闭搜索广播");
-                isSearch = true;
-                mBluetoothDevice = s;
-                continue;
-            }
-        }
+//        for (BluetoothDevice s : mBluetoothDevices) {
+//            if ((s.getAddress().replace(":", "")).equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
+//                LogUtil.d("搜索到锁了，关闭搜索广播");
+//                isSearch = true;
+//                mBluetoothDevice = s;
+//                continue;
+//            }
+//        }
 
-        if (!isSearch) {
+        if (!isSearchLock) {
             ToastUtils.showToast(mContext, "未搜索到锁，请确认是否打开锁的蓝牙");
-        } else { //找到锁
-            connectBluetooth(mBluetoothDevice);
         }
     }
 

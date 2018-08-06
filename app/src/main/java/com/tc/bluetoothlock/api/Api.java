@@ -1,6 +1,5 @@
 package com.tc.bluetoothlock.api;
 
-import com.tc.bluetoothlock.bean.BaseBeanClass;
 import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.bean.LockInfo;
 import com.tc.bluetoothlock.bean.LoginInfo;

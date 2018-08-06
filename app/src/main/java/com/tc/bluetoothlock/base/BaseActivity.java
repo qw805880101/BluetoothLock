@@ -1,5 +1,6 @@
 package com.tc.bluetoothlock.base;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.psylife.wrmvplibrary.RxManager;
@@ -9,6 +10,7 @@ import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.tc.bluetoothlock.R;
+import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothUtil;
 import com.tc.bluetoothlock.api.Api;
 
 import rx.functions.Action1;
@@ -23,15 +25,24 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
 
     public RxManager mRxManager = new RxManager();
 
+    /* 蓝牙工具类 */
+    public BluetoothUtil mBluetoothUtil;
+
     public void setStatusBarColor() {
         StatusBarUtil.setTransparent(this);
     }
 
     @Override
     public View getTitleView() {
+
         return null;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mBluetoothUtil = BluetoothUtil.getBluetoothUtil(this);
+    }
 
     /**
      * 显示错误日志

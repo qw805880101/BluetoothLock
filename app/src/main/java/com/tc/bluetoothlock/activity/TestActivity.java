@@ -1,5 +1,9 @@
 package com.tc.bluetoothlock.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,7 +12,10 @@ import android.widget.Button;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.Utils.AesUtil;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothUtil;
+import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDAPI;
 import com.tc.bluetoothlock.base.BaseActivity;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,9 +41,6 @@ public class TestActivity extends BaseActivity {
     @BindView(R.id.list_item)
     RecyclerView listItem;
 
-    /* 蓝牙工具类 */
-    private BluetoothUtil mBluetoothUtil;
-
     @Override
     public int getLayoutId() {
         return R.layout.activity_test;
@@ -45,6 +49,14 @@ public class TestActivity extends BaseActivity {
     @Override
     public void initView(Bundle savedInstanceState) {
         mBluetoothUtil = BluetoothUtil.getBluetoothUtil(this);
+        BroadcastReceiver broadcast_cmd = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                byte[] bytes = CMDAPI.GET_TOKEN();
+                mBluetoothUtil.doWrite(bytes);
+            }
+        };
+        registerReceiver(broadcast_cmd, new IntentFilter("test"));
     }
 
     @Override
@@ -58,8 +70,9 @@ public class TestActivity extends BaseActivity {
             case R.id.bt_scan:
                 break;
             case R.id.bt_open_lock:
-                byte[] bytes = "06010101000000000000000000000000".getBytes();
-                mBluetoothUtil.doWrite(AesUtil.Encrypt(bytes, KEY));
+                byte[] bytes = CMDAPI.GET_TOKEN();
+                mBluetoothUtil.doWrite(bytes);
+//                this.sendBroadcast(new Intent());
                 break;
             case R.id.bt_wifi:
                 break;

@@ -20,6 +20,7 @@ import com.tc.bluetoothlock.activity.TestActivity;
 
 import junit.framework.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 public class BluetoothUtil {
@@ -119,6 +120,7 @@ public class BluetoothUtil {
              */
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                super.onServicesDiscovered(gatt, status);
                 LogUtil.d("===搜到设备服务===");
                 if (status == BluetoothGatt.GATT_SUCCESS) {//发现该设备的服务
 //                //拿到该服务 1,通过UUID拿到指定的服务  2,可以拿到该设备上所有服务的集合
@@ -176,7 +178,6 @@ public class BluetoothUtil {
                 } else {//未发现该设备的服务
 //                    Logger.show(TAG, "===未发现设备服务===");
                 }
-                super.onServicesDiscovered(gatt, status);
             }
 
             private void enableNotification(boolean enable, BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
@@ -205,6 +206,32 @@ public class BluetoothUtil {
 
             }
 
+            private BluetoothGattCharacteristic findNotifyCharacteristic(BluetoothGattService service, UUID characteristicUUID) {
+                //此方法是在没有收到蓝牙的通知回调加的，最后才确定了是硬件那边本来就没给我回调信息，当然加入此方法也不会有问题
+                BluetoothGattCharacteristic characteristic = null;
+                List<BluetoothGattCharacteristic> characteristics = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    characteristics = service.getCharacteristics();
+                    for (BluetoothGattCharacteristic c : characteristics) {
+                        if ((c.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0
+                                && characteristicUUID.equals(c.getUuid())) {
+                            characteristic = c;
+                            break;
+                        }
+                    }
+                    if (characteristic != null)
+                        return characteristic;
+                    for (BluetoothGattCharacteristic c : characteristics) {
+                        if ((c.getProperties() & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0
+                                && characteristicUUID.equals(c.getUuid())) {
+                            characteristic = c;
+                            break;
+                        }
+                    }
+                }
+                return characteristic;
+            }
+
             //回调响应特征读操作的结果。
             @Override
             public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
@@ -215,6 +242,13 @@ public class BluetoothUtil {
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 super.onCharacteristicWrite(gatt, characteristic, status);
+                if (status == BluetoothGatt.GATT_SUCCESS) {//写入成功
+                    LogUtil.d("参数写入成功——");
+                } else if (status == BluetoothGatt.GATT_FAILURE) {//写入失败
+                    LogUtil.d("参数写入失败——");
+                } else if (status == BluetoothGatt.GATT_WRITE_NOT_PERMITTED) {//没权限
+                    LogUtil.d("参数写入没权限——");
+                }
             }
 
             @Override
