@@ -1,24 +1,15 @@
 package com.tc.bluetoothlock.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
 import com.tc.bluetoothlock.R;
-import com.tc.bluetoothlock.Utils.AesUtil;
-import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothUtil;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDAPI;
 import com.tc.bluetoothlock.base.BaseActivity;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TestActivity extends BaseActivity {
@@ -48,15 +39,7 @@ public class TestActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-        mBluetoothUtil = BluetoothUtil.getBluetoothUtil(this);
-        BroadcastReceiver broadcast_cmd = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                byte[] bytes = CMDAPI.GET_TOKEN();
-                mBluetoothUtil.doWrite(bytes);
-            }
-        };
-        registerReceiver(broadcast_cmd, new IntentFilter("test"));
+
     }
 
     @Override
