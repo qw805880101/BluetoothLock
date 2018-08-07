@@ -45,7 +45,21 @@
     <string name="register_successfully">注册成功</string>
     <string name="Re_cquisition_after">s后重新获取</string>
 
+    <!-- 用户界面 -->
+    <string name="open_lock_info">开锁记录</string>
+    <string name="Guide_to_use">使用指南</string>
+    <string name="Version_update">版本更新</string>
+    <string name="feedback">意见反馈</string>
+    <string name="About_us">关于我们</string>
 
+    <!-- 个人信息 -->
+    <string name="head">头像：</string>
+    <string name="name">昵称：</string>
+    <string name="mobile">手机号：</string>
+    <string name="Personal_nformation">个人信息</string>
+
+    <!-- 意见反馈 -->
+    <string name="Please_enter_your_opinion">请输入您的意见</string>
 
 
 

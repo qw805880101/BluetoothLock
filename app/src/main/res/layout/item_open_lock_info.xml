@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_23262d"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="15dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/iv_head"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/touxiang"
+        app:riv_oval="true" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="小鱼"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/txt_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="2018/08/09 19:00"
+            android:textColor="@color/txt_646464"
+            android:textSize="13dp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_open_lock_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/nav_icon_personal" />
+
+    <TextView
+        android:id="@+id/txt_lock_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:text="家里的锁"
+        android:textColor="@color/white"
+        android:textSize="15dp" />
+
+</LinearLayout>

@@ -40,6 +40,9 @@ dependencies {
     //二维码扫描
     compile project(':tcmvplibrary')
 
+    //圆角图片
+    compile 'com.makeramen:roundedimageview:2.3.0'
+
     //二维码扫描
     implementation project(':qrcodelib')
 }

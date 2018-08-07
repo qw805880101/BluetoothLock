@@ -134,6 +134,7 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
         if (view == mTitleBuilder.getIvLeft()) {
             ToastUtils.showToast(this, "点我干啥");
+            startActivity(new Intent(this, AccountActivity.class));
         }
 
         if (view == mTitleBuilder.getIvRight()) {
@@ -141,10 +142,9 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 //            requestCameraPerm();
             start("100000000");
         }
-
     }
 
-    private void register(){
+    private void register() {
         /* 注册监听蓝牙广播 */
         mBluetoothReceiver = new BluetoothReceiver(this);
         //需要过滤多个动作，则调用IntentFilter对象的addAction添加新动作
