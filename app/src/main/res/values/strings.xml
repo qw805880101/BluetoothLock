@@ -50,7 +50,9 @@
     <string name="Guide_to_use">使用指南</string>
     <string name="Version_update">版本更新</string>
     <string name="feedback">意见反馈</string>
+    <string name="set">设置</string>
     <string name="About_us">关于我们</string>
+    <string name="Exit_the_current_account">退出当前账号</string>
 
     <!-- 个人信息 -->
     <string name="head">头像：</string>

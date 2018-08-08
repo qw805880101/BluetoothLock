@@ -50,6 +50,9 @@
             android:name=".activity.AccountActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.SetActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.AccountInfoActivity"
             android:screenOrientation="portrait" />
         <activity

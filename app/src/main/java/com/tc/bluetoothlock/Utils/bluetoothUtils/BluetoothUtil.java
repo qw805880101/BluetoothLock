@@ -302,7 +302,6 @@ public class BluetoothUtil {
         mBluetoothGatt.writeCharacteristic(cmdWriteCharacter);
 
         LogUtil.d("===执行指令===");
-
     }
 
 }

@@ -30,7 +30,7 @@ public class FeedbackActivity extends BaseActivity {
     public View getTitleView() {
         mTitleBuilder = new TitleBuilder(this);
         mTitleBuilder.setTitleText(getResources().getString(R.string.feedback));
-        mTitleBuilder.setLeftImage(R.mipmap.fanhui);
+        mTitleBuilder.setLeftImage(R.mipmap.nav_icon_back);
         mTitleBuilder.setTitleBgRes(R.color.bg_151519);
         mTitleBuilder.setTitleTextColor(this, R.color.white);
         mTitleBuilder.setLeftOnClickListener(new OnClickListener() {

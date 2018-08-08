@@ -65,4 +65,14 @@ public class TestActivity extends BaseActivity {
                 break;
         }
     }
+
+
+    public void startAdvertising() {
+        byte[] broadcastData = {0x34, 0x56};
+        String bleName = "小郎";
+        broadcastData = bleName.getBytes();
+
+        //广播设置参数，广播数据，还有一个是Callback
+//        mBluetoothLeAdvertiser.startAdvertising(createAdvSettings(true, 0), createAdvertiseData(broadcastData), mAdvertiseCallback);
+    }
 }
