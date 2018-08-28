@@ -72,6 +72,12 @@
             android:name="design_height_in_dp"
             android:value="640"/>
 
+        <service
+            android:name=".Utils.TestService"
+            android:persistent="true"
+            android:enabled="true"
+            android:exported="true"/>
+
     </application>
 
 </manifest>

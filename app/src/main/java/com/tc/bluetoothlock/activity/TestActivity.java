@@ -1,11 +1,17 @@
 package com.tc.bluetoothlock.activity;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.tc.bluetoothlock.R;
+import com.tc.bluetoothlock.Utils.TestService;
+import com.tc.bluetoothlock.Utils.bluetoothUtils.BLEUtils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDAPI;
 import com.tc.bluetoothlock.base.BaseActivity;
 
@@ -32,6 +38,15 @@ public class TestActivity extends BaseActivity {
     @BindView(R.id.list_item)
     RecyclerView listItem;
 
+    private String mac;
+    int electricity = -1;//电量
+    private Dialog loadingDialog;
+
+    private double lon;
+    private double lat;
+    private String name;
+    private String lockKey;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_test;
@@ -44,6 +59,10 @@ public class TestActivity extends BaseActivity {
 
     @Override
     public void initdata() {
+        mac = getIntent().getStringExtra("mac");
+        name = getIntent().getStringExtra("name");
+        lockKey = getIntent().getStringExtra("lockKey");
+        BLEUtils.openLockByBLE(this, mac.toUpperCase(), lockKey, BLEUtils.password);
 
     }
 
@@ -53,11 +72,16 @@ public class TestActivity extends BaseActivity {
             case R.id.bt_scan:
                 break;
             case R.id.bt_open_lock:
-                byte[] bytes = CMDAPI.GET_TOKEN();
-                mBluetoothUtil.doWrite(bytes);
+                // 链接状态--BLE所有连接--连接成功--等待输入指令
+                TestService.sendCmd(this, CMDAPI.GET_TOKEN());
+                LogUtil.d("发送指令--获取TOKEN");
 //                this.sendBroadcast(new Intent());
                 break;
             case R.id.bt_wifi:
+                // 链接状态--BLE所有连接--连接成功--等待输入指令
+                TestService.sendCmd(this, CMDAPI.OPEN_LOCK());
+                LogUtil.d("发送指令--开锁");
+//                this.sendBroadcast(new Intent());
                 break;
             case R.id.bt_fingerprint:
                 break;

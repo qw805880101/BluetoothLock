@@ -195,7 +195,7 @@ public class BluetoothUtil {
                     }
                     gatt.writeDescriptor(clientConfig);
                 }
-                mContext.startActivity(new Intent(mContext, TestActivity.class));
+//                mContext.startActivity(new Intent(mContext, TestActivity.class));
 //            try {
 //                Thread.sleep(300);
 //                sendStatusChange(CONNECT_STATE_SUCCESS);

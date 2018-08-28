@@ -55,6 +55,9 @@
     <string name="About_us">关于我们</string>
     <string name="Exit_the_current_account">退出当前账号</string>
 
+    <string name="openning">开锁中</string>
+    <string name="searching">正在搜索</string>
+
     <!-- 个人信息 -->
     <string name="head">头像：</string>
     <string name="name">昵称：</string>
@@ -63,6 +66,7 @@
 
     <!-- 意见反馈 -->
     <string name="Please_enter_your_opinion">请输入您的意见</string>
+
 
 
 

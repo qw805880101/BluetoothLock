@@ -9,7 +9,6 @@ import com.psylife.wrmvplibrary.data.net.RxService;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
-import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothUtil;
 import com.tc.bluetoothlock.api.Api;
 import com.tc.bluetoothlock.view.TitleView;
@@ -44,7 +43,6 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBluetoothUtil = BluetoothUtil.getBluetoothUtil(this);
     }
 
     /**

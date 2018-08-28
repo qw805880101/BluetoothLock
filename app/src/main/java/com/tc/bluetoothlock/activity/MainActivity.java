@@ -7,39 +7,45 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.psylife.wrmvplibrary.utils.IntentUtils;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.TitleBuilder;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.bluetoothlock.R;
+import com.tc.bluetoothlock.Utils.bluetoothUtils.BLEUtils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothReceiver;
-import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothUtil;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.SearchBluetoothInterface;
 import com.tc.bluetoothlock.adapter.LockAdapter;
 import com.tc.bluetoothlock.adapter.MyBluetoothAdapter;
 import com.tc.bluetoothlock.base.BaseActivity;
-import com.tc.bluetoothlock.bean.BaseBeanClass;
 import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.bean.LockInfo;
-import com.tc.bluetoothlock.view.InterestSpaceItemDecoration;
+import com.tc.bluetoothlock.helper.BaseViewHelper;
 import com.tc.bluetoothlock.view.InterestSpaceItemDecorationList;
+import com.tc.bluetoothlock.view.WaveView;
 import com.tc.bluetoothlock.view.TitleView;
 
 import java.util.ArrayList;
@@ -48,8 +54,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.github.xudaojie.qrcodelib.CaptureActivity;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -67,6 +71,8 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     RecyclerView mLockList;
     @BindView(R.id.lin_add_lock)
     LinearLayout mLinAddLock;
+    @BindView(R.id.txt_hint)
+    TextView txt_hint;
 
     /* 蓝牙广播 */
     private BluetoothReceiver mBluetoothReceiver;
@@ -85,6 +91,12 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
     //是否搜索到锁
     boolean isSearchLock = false;
+
+    private BaseViewHelper helper;
+    private View v;
+    private WaveView mWaveView;
+    private TextView tvHint;
+    private EditText etName;
 
     public void setStatusBarColor() {
         StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
@@ -201,7 +213,8 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
                 if (info.getCode() == 200 && info.getMsg().equals("SUCCESS")) {
                     lockInfo = info.getData();
 
-                    if (mBluetoothUtil.startSeachBlue()) {
+                    if (BLEUtils.startLeScan()) {
+                        openLockAnimation();
                         Toast.makeText(mContext, "开始搜索蓝牙, 请稍后", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(mContext, "开始搜索蓝牙失败, 请检查蓝牙是否开启", Toast.LENGTH_SHORT).show();
@@ -225,13 +238,31 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         }
     }
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Override
     public void searchSuccess(BluetoothDevice mBluetoothDevices) {
         String mac = mBluetoothDevices.getAddress().replace(":", "");
         LogUtil.d("搜索:" + mac);
         if (mac.equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
             LogUtil.d("搜索到锁了");
-            connectBluetooth(mBluetoothDevices);
+            if (helper != null && helper.isShowing()) {
+                helper.back();
+                mWaveView.stop();
+            }
+//            connectBluetooth(mBluetoothDevices);
+            Bundle bundle = new Bundle();
+            bundle.putString("mac", mBluetoothDevices.getAddress());
+            bundle.putString("name", mBluetoothDevices.getName());
+            bundle.putString("password", "000000");
+            bundle.putString("lockKey", "58,96,67,42,92,01,33,31,41,30,15,78,12,19,40,37");
+
+            BLEUtils.password = "000000";
+            IntentUtils.startActivity(this, TestActivity.class, bundle);
         }
     }
 
@@ -255,16 +286,11 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
         if (!isSearchLock) {
             ToastUtils.showToast(mContext, "未搜索到锁，请确认是否打开锁的蓝牙");
+            if (helper != null && helper.isShowing()) {
+                helper.back();
+                mWaveView.stop();
+            }
         }
-    }
-
-    /**
-     * 连接蓝牙
-     *
-     * @param mBluetoothDevices
-     */
-    private void connectBluetooth(BluetoothDevice mBluetoothDevices) {
-        mBluetoothUtil.startConnectBluetooth(mBluetoothDevices);
     }
 
     /**
@@ -284,5 +310,30 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         mTitleView.setLeftOnClickListener(this);
         mTitleView.setRightImage(R.mipmap.nav_icon_add);
         mTitleView.setRightOnClickListener(this);
+    }
+
+    private void openLockAnimation() {
+        v = View.inflate(this, R.layout.layout_ai, null);
+        mWaveView = (WaveView) v.findViewById(R.id.wave_view);
+        tvHint = (TextView) v.findViewById(R.id.tv_hint);
+        tvHint.setText(getString(R.string.searching));
+        mWaveView.setDuration(3000);
+        mWaveView.setStyle(Paint.Style.FILL);
+        mWaveView.setColor(getResources().getColor(R.color.text));
+        mWaveView.setInterpolator(new LinearOutSlowInInterpolator());
+//显示在当前页面跳转
+        helper = new BaseViewHelper.Builder(this, txt_hint)
+                .setEndView(v)
+                .setDimAlpha(0)
+                .create();
+        mWaveView.start();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mWaveView.stop();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
