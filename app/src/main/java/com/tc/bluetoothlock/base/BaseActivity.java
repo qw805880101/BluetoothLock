@@ -12,6 +12,7 @@ import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothUtil;
 import com.tc.bluetoothlock.api.Api;
+import com.tc.bluetoothlock.view.TitleView;
 
 import rx.functions.Action1;
 
@@ -27,6 +28,8 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
 
     /* 蓝牙工具类 */
     public BluetoothUtil mBluetoothUtil;
+
+    public TitleView mTitleView;
 
     public void setStatusBarColor() {
         StatusBarUtil.setTransparent(this);

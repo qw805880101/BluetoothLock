@@ -31,6 +31,7 @@
     <string name="verifying_code">请输入验证码</string>
     <string name="get_the_verifying_code">获取验证码</string>
     <string name="confirm">确定</string>
+    <string name="Forget_the_password">忘记密码</string>
 
     <!-- 注册 -->
     <string name="sure_password">请确认密码</string>

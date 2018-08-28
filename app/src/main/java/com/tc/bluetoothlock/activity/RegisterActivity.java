@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.base.BaseActivity;
 import com.tc.bluetoothlock.bean.BaseBeanInfo;
+import com.tc.bluetoothlock.view.TitleView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +61,14 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
+        mTitleView = new TitleView(this);
+        mTitleView.setTitleText(this.getResources().getString(R.string.bt_register));
+        mTitleView.setLeftOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

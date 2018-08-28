@@ -7,13 +7,16 @@ import com.psylife.wrmvplibrary.WRCoreApp;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.tencent.smtt.sdk.QbSdk;
 
+import me.jessyan.autosize.AutoSizeConfig;
+
 /**
  * Created by admin on 2017/8/30.
  */
 
 public class MyApplication extends WRCoreApp {
 
-    public static String URL = "http://c.99bicycle.com:20001/";
+//    public static String URL = "http://c.99bicycle.com:20001/";
+    public static String URL = "http://ehome.kira666.com:20001/EhomePro/";
 
     @Override
     public void onCreate() {
@@ -43,6 +46,8 @@ public class MyApplication extends WRCoreApp {
         };
         //x5内核初始化接口
         QbSdk.initX5Environment(getApplicationContext(), cb);
+
+        AutoSizeConfig.getInstance();
 
     }
 

@@ -13,12 +13,13 @@
         android:layout_marginTop="20dp"
         android:text="永安居"
         android:textColor="@color/white"
-        android:textSize="17dp" />
+        android:textSize="17dp"
+        android:visibility="gone" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:src="@mipmap/logo" />
 
     <LinearLayout
@@ -37,10 +38,10 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@null"
+            android:hint="@string/phone_number"
             android:inputType="number"
             android:maxLength="11"
             android:text="17621159290"
-            android:hint="@string/phone_number"
             android:textColor="@color/txt_646464"
             android:textColorHint="@color/txt_646464"
             android:textSize="17dp" />
@@ -56,10 +57,10 @@
             android:layout_height="60dp"
             android:background="@null"
             android:hint="@string/password"
-            android:text="123456"
             android:inputType="textPassword"
-            android:textColorHint="@color/txt_646464"
+            android:text="123456"
             android:textColor="@color/txt_646464"
+            android:textColorHint="@color/txt_646464"
             android:textSize="17dp" />
 
 
@@ -69,20 +70,20 @@
         android:id="@+id/bt_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/login"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:textSize="20dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/bt_login"
-        android:textColor="@color/white" />
+        android:text="@string/login"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -90,17 +91,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/forget_password"
-            android:textColor="@color/txt_646464"
-            />
+            android:textColor="@color/txt_646464" />
 
         <TextView
             android:id="@+id/txt_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register"
             android:layout_alignParentRight="true"
-            android:textColor="@color/txt_646464"
-            />
+            android:text="@string/register"
+            android:textColor="@color/txt_646464" />
 
     </RelativeLayout>
 

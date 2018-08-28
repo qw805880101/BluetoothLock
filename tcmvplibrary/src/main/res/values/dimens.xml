@@ -9,5 +9,5 @@
     <dimen name="line_m_top">12.5dp</dimen>
     <dimen name="line_m_down">11.5dp</dimen>
     <dimen name="line_h">20dp</dimen>
-    <dimen name="title_height">44dp</dimen>
+    <dimen name="title_height">60dp</dimen>
 </resources>

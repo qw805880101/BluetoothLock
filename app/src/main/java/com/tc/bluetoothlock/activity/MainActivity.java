@@ -40,6 +40,7 @@ import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.bean.LockInfo;
 import com.tc.bluetoothlock.view.InterestSpaceItemDecoration;
 import com.tc.bluetoothlock.view.InterestSpaceItemDecorationList;
+import com.tc.bluetoothlock.view.TitleView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,7 +92,7 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
     @Override
     public View getTitleView() {
-        return getTitleBuilder().build();
+        return null;
     }
 
     @Override
@@ -101,6 +102,8 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 
     @Override
     public void initView(Bundle savedInstanceState) {
+
+        initTitle();
 
         mMyBluetoothAdapter = new MyBluetoothAdapter(this, mBluetoothDevices);
 
@@ -132,12 +135,12 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
             requestCameraPerm();
         }
 
-        if (view == mTitleBuilder.getIvLeft()) {
+        if (view == mTitleView.getIvLeft()) {
             ToastUtils.showToast(this, "点我干啥");
             startActivity(new Intent(this, AccountActivity.class));
         }
 
-        if (view == mTitleBuilder.getIvRight()) {
+        if (view == mTitleView.getIvRight()) {
             ToastUtils.showToast(this, "点我弄啥~");
 //            requestCameraPerm();
             start("100000000");
@@ -269,18 +272,17 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
      *
      * @return
      */
-    private TitleBuilder getTitleBuilder() {
-        mTitleBuilder = new TitleBuilder(this);
-        mTitleBuilder.setTitleTextColor(this, R.color.white);
+    private void initTitle() {
+        mTitleView = new TitleView(this);
+        mTitleView.setTitleTextColor(this, R.color.white);
         SpannableString spannableString = new SpannableString(this.getResources().getString(R.string.e_home));
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(this.getResources().getColor(R.color.txt_0577fe));
         spannableString.setSpan(colorSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        mTitleBuilder.getTvTitle().setText(spannableString);
-        mTitleBuilder.setTitleBgRes(R.color.bg_151519);
-        mTitleBuilder.setLeftImage(R.mipmap.nav_icon_personal);
-        mTitleBuilder.setLeftOnClickListener(this);
-        mTitleBuilder.setRightImage(R.mipmap.nav_icon_add);
-        mTitleBuilder.setRightOnClickListener(this);
-        return mTitleBuilder;
+        mTitleView.getTvTitle().setText(spannableString);
+        mTitleView.setTitleBgRes(R.color.bg_151519);
+        mTitleView.setLeftImage(R.mipmap.nav_icon_personal);
+        mTitleView.setLeftOnClickListener(this);
+        mTitleView.setRightImage(R.mipmap.nav_icon_add);
+        mTitleView.setRightOnClickListener(this);
     }
 }
