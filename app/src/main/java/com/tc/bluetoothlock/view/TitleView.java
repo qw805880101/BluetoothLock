@@ -67,14 +67,14 @@ public class TitleView {
         rlTitleView = (RelativeLayout) rootView.findViewById(R.id.rl_title);
         //取消状态栏修改颜色
         if (Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT_WATCH) {
-            rlTitleView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_height)));
+            rlTitleView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_height_68)));
             tvTitle.setPadding(0, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_pd), 0, 0);
             ivLeft.setPadding(0, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_pd), 0, 0);
             ivRight.setPadding(0, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_pd), 0, 0);
             tvLeft.setPadding(mActivity.getResources().getDimensionPixelOffset(R.dimen.title_pd), mActivity.getResources().getDimensionPixelOffset(R.dimen.title_pd), 0, 0);
             tvRight.setPadding(0, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_pd), mActivity.getResources().getDimensionPixelOffset(R.dimen.title_pd), 0);
         } else {
-            rlTitleView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_height_60)));
+            rlTitleView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, mActivity.getResources().getDimensionPixelOffset(R.dimen.title_height_48)));
         }
     }
 

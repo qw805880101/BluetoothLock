@@ -6,11 +6,12 @@
     android:background="@color/bg_151519"
     android:orientation="vertical">
 
+    <include layout="@layout/view_title" />
+
     <LinearLayout
         android:id="@+id/lin_head"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="10dp"
         android:background="@color/bg_23262d"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -42,7 +43,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/bg_4a505f" />
 
     <LinearLayout
@@ -80,7 +81,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/bg_4a505f" />
 
     <LinearLayout

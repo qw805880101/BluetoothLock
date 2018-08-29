@@ -62,8 +62,6 @@ public class TestActivity extends BaseActivity {
         mac = getIntent().getStringExtra("mac");
         name = getIntent().getStringExtra("name");
         lockKey = getIntent().getStringExtra("lockKey");
-        BLEUtils.openLockByBLE(this, mac.toUpperCase(), lockKey, BLEUtils.password);
-
     }
 
     @OnClick({R.id.bt_scan, R.id.bt_open_lock, R.id.bt_wifi, R.id.bt_fingerprint, R.id.bt_password})

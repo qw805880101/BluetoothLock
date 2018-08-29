@@ -1,5 +1,7 @@
 package com.tc.bluetoothlock.Utils.bluetoothUtils;
 
+import android.content.Intent;
+
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.tc.bluetoothlock.mode.TxOrder;
 
@@ -73,6 +75,47 @@ public class CMDUtils {
         }
         return ret;
     }
+
+    /**
+     * 拼接key
+     *
+     * @param str
+     * @return
+     */
+    public static String hexStr(String str) {
+        int index = 0;
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 1; i < str.length() + 1; i++) {
+            if (i % 2 == 0) {
+                stringBuffer.append(str.substring(index, i));
+                stringBuffer.append(",");
+                index = i;
+            }
+        }
+        stringBuffer.delete(stringBuffer.length() - 1, stringBuffer.length());
+        return stringBuffer.toString();
+    }
+
+    public static byte[] hexSixteen(String str) {
+        int index = 0;
+        int pos = 0;
+        StringBuffer stringBuffer = new StringBuffer();
+        int[] ints = new int[6];
+        for (int j = 1; j < str.length() + 1; j++) {
+            if (j % 2 == 0) {
+                ints[pos] = Integer.parseInt(str.substring(index, j));
+                index = j;
+                pos++;
+            }
+        }
+
+        for (int j = 0; j < ints.length; j++) {
+            stringBuffer.append(Integer.toHexString(ints[j]));
+        }
+        String s = hexStr(stringBuffer.toString());
+        return hexStr2Password(s);
+    }
+
 
     /**
      * bytes字符串转换为password

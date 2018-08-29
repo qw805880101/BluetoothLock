@@ -5,6 +5,8 @@
     android:background="@color/bg_151519"
     android:orientation="vertical">
 
+    <include layout="@layout/view_title" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_open_lock_info"
         android:layout_width="match_parent"

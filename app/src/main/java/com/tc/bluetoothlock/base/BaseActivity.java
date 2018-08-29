@@ -61,6 +61,7 @@ public abstract class BaseActivity extends WRBaseActivity implements Action1<Thr
     @Override
     public void call(Throwable throwable) {
         LogUtil.d(throwable.getMessage());
+        throwable.printStackTrace();
         stopProgressDialog();
         ToastUtils.showToast(this, "网络错误");
     }

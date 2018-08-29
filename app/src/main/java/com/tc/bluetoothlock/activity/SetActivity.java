@@ -11,6 +11,7 @@ import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.TitleBuilder;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.base.BaseActivity;
+import com.tc.bluetoothlock.view.TitleView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -24,25 +25,9 @@ public class SetActivity extends BaseActivity {
     @BindView(R.id.bt_exit)
     Button mBtExit;
 
-    public void setStatusBarColor() {
-        StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
-    }
-
     @Override
     public View getTitleView() {
-        mTitleBuilder = new TitleBuilder(this);
-        mTitleBuilder.setTitleText(getResources().getString(R.string.set));
-        mTitleBuilder.setLeftImage(R.mipmap.nav_icon_back);
-        mTitleBuilder.setTitleBgRes(R.color.bg_151519);
-        mTitleBuilder.setLeftOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-//        mTitleBuilder.setTitleBgRes(R.color.bg_blue);
-        mTitleBuilder.setTitleTextColor(this, R.color.white);
-        return mTitleBuilder.build();
+        return null;
     }
 
     @Override
@@ -52,7 +37,14 @@ public class SetActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
+        mTitleView = new TitleView(this);
+        mTitleView.setTitleText(this.getResources().getString(R.string.set));
+        mTitleView.setLeftOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.os.Build.VERSION;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -37,6 +39,7 @@ import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BLEUtils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothReceiver;
+import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDUtils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.SearchBluetoothInterface;
 import com.tc.bluetoothlock.adapter.LockAdapter;
 import com.tc.bluetoothlock.adapter.MyBluetoothAdapter;
@@ -74,9 +77,6 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     @BindView(R.id.txt_hint)
     TextView txt_hint;
 
-    /* 蓝牙广播 */
-    private BluetoothReceiver mBluetoothReceiver;
-
     /* 蓝牙列表 */
     private MyBluetoothAdapter mMyBluetoothAdapter;
 
@@ -97,10 +97,6 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     private WaveView mWaveView;
     private TextView tvHint;
     private EditText etName;
-
-    public void setStatusBarColor() {
-        StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
-    }
 
     @Override
     public View getTitleView() {
@@ -134,11 +130,12 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         mLockList.setLayoutManager(new LinearLayoutManager(this));
         mLockList.addItemDecoration(new InterestSpaceItemDecorationList(40));
         mLockList.setAdapter(mLockAdapter);
+
+        BLEUtils.setSearchBluetoothInterface(this);
     }
 
     @Override
     public void initdata() {
-        register();
     }
 
     @Override
@@ -159,20 +156,9 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         }
     }
 
-    private void register() {
-        /* 注册监听蓝牙广播 */
-        mBluetoothReceiver = new BluetoothReceiver(this);
-        //需要过滤多个动作，则调用IntentFilter对象的addAction添加新动作
-        IntentFilter foundFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        foundFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        foundFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(mBluetoothReceiver, foundFilter);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mBluetoothReceiver);
     }
 
     /**
@@ -212,13 +198,8 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
                 stopProgressDialog();
                 if (info.getCode() == 200 && info.getMsg().equals("SUCCESS")) {
                     lockInfo = info.getData();
-
-                    if (BLEUtils.startLeScan()) {
-                        openLockAnimation();
-                        Toast.makeText(mContext, "开始搜索蓝牙, 请稍后", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(mContext, "开始搜索蓝牙失败, 请检查蓝牙是否开启", Toast.LENGTH_SHORT).show();
-                    }
+                    openLockAnimation();
+                    BLEUtils.openLockByBLE(MainActivity.this, lockInfo.getLockBluetoothMac(), CMDUtils.hexStr(lockInfo.getNewKey()), CMDUtils.hexSixteen(lockInfo.getNewPassword()));
 
                 } else {
                     toastMessage("" + info.getCode(), info.getMsg());
@@ -254,14 +235,14 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
                 helper.back();
                 mWaveView.stop();
             }
+            BLEUtils.stopLeScan();
 //            connectBluetooth(mBluetoothDevices);
             Bundle bundle = new Bundle();
             bundle.putString("mac", mBluetoothDevices.getAddress());
             bundle.putString("name", mBluetoothDevices.getName());
-            bundle.putString("password", "000000");
-            bundle.putString("lockKey", "58,96,67,42,92,01,33,31,41,30,15,78,12,19,40,37");
+            bundle.putString("password", lockInfo.getNewPassword());
+            bundle.putString("lockKey", lockInfo.getNewKey());
 
-            BLEUtils.password = "000000";
             IntentUtils.startActivity(this, TestActivity.class, bundle);
         }
     }
@@ -273,8 +254,9 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
      */
     @Override
     public void searchFinish(List<BluetoothDevice> mBluetoothDevices) {
-        mMyBluetoothAdapter.setNewBluetoothDevices(mBluetoothDevices);
-        BluetoothDevice mBluetoothDevice = null;
+        if (mBluetoothDevices != null) {
+            mMyBluetoothAdapter.setNewBluetoothDevices(mBluetoothDevices);
+            BluetoothDevice mBluetoothDevice = null;
 //        for (BluetoothDevice s : mBluetoothDevices) {
 //            if ((s.getAddress().replace(":", "")).equals(lockInfo.getLockBluetoothMac())) { //搜索到匹配的锁蓝牙 关闭蓝牙搜索
 //                LogUtil.d("搜索到锁了，关闭搜索广播");
@@ -283,15 +265,26 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
 //                continue;
 //            }
 //        }
-
+        }
         if (!isSearchLock) {
-            ToastUtils.showToast(mContext, "未搜索到锁，请确认是否打开锁的蓝牙");
-            if (helper != null && helper.isShowing()) {
-                helper.back();
-                mWaveView.stop();
-            }
+            mHandler.sendEmptyMessage(0);
         }
     }
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                ToastUtils.showToast(mContext, "未搜索到锁，请确认是否打开锁的蓝牙");
+                BLEUtils.stopLeScan(); //关闭蓝牙搜索
+                if (helper != null && helper.isShowing()) {
+                    mWaveView.stop();
+                    helper.back();
+                }
+            }
+        }
+    };
 
     /**
      * 初始化标题栏信息
@@ -321,7 +314,7 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         mWaveView.setStyle(Paint.Style.FILL);
         mWaveView.setColor(getResources().getColor(R.color.text));
         mWaveView.setInterpolator(new LinearOutSlowInInterpolator());
-//显示在当前页面跳转
+        //显示在当前页面跳转
         helper = new BaseViewHelper.Builder(this, txt_hint)
                 .setEndView(v)
                 .setDimAlpha(0)
@@ -332,8 +325,10 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            BLEUtils.stopLeScan(); //关闭蓝牙搜索
             mWaveView.stop();
+            helper.back();
         }
-        return super.onKeyDown(keyCode, event);
+        return true;
     }
 }

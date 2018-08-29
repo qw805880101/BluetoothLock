@@ -9,6 +9,7 @@ import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.TitleBuilder;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.base.BaseActivity;
+import com.tc.bluetoothlock.view.TitleView;
 
 import butterknife.BindView;
 
@@ -17,26 +18,9 @@ public class OpenLockInfoActivity extends BaseActivity {
     @BindView(R.id.recycler_open_lock_info)
     RecyclerView mRecyclerView;
 
-    public void setStatusBarColor() {
-        StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
-    }
-
     @Override
     public View getTitleView() {
-        mTitleBuilder = new TitleBuilder(this);
-        mTitleBuilder.setTitleText(getResources().getString(R.string.open_lock_info));
-        mTitleBuilder.setLeftImage(R.mipmap.nav_icon_back);
-        mTitleBuilder.setTitleBgRes(R.color.bg_151519);
-        mTitleBuilder.setTitleTextColor(this, R.color.white);
-        mTitleBuilder.setLeftOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-//        mTitleBuilder.setTitleBgRes(R.color.bg_blue);
-//        mTitleBuilder.setTitleTextColor(this, R.color.white);
-        return mTitleBuilder.build();
+        return null;
     }
 
 
@@ -47,7 +31,14 @@ public class OpenLockInfoActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
+        mTitleView = new TitleView(this);
+        mTitleView.setTitleText(this.getResources().getString(R.string.open_lock_info));
+        mTitleView.setLeftOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

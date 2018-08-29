@@ -3,6 +3,7 @@ package com.tc.bluetoothlock.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.base.BaseActivity;
+import com.tc.bluetoothlock.view.TitleView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,12 +32,6 @@ public class AccountActivity extends BaseActivity {
     LinearLayout mLinUpdate;
     @BindView(R.id.lin_set)
     LinearLayout mLinSet;
-    @BindView(R.id.iv_back)
-    ImageView ivBack;
-
-    public void setStatusBarColor() {
-        StatusBarUtil.setColor(this, this.getResources().getColor(R.color.bg_151519));
-    }
 
     @Override
     public int getLayoutId() {
@@ -44,7 +40,13 @@ public class AccountActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
+        mTitleView = new TitleView(this);
+        mTitleView.setLeftOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -52,12 +54,9 @@ public class AccountActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_head, R.id.lin_open_lock_info, R.id.lin_guide_to_use, R.id.lin_update, R.id.lin_set})
+    @OnClick({R.id.iv_head, R.id.lin_open_lock_info, R.id.lin_guide_to_use, R.id.lin_update, R.id.lin_set})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.iv_back: //头像
-                finish();
-                break;
             case R.id.iv_head: //头像
                 startActivity(new Intent(this, AccountInfoActivity.class));
                 break;

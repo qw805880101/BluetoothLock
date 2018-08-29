@@ -5,16 +5,18 @@
     android:background="@color/bg_151519"
     android:orientation="vertical">
 
+    <include layout="@layout/view_title" />
+
     <EditText
         android:id="@+id/et_feedback_msg"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="10dp"
         android:background="@color/bg_23262d"
         android:gravity="top"
         android:hint="@string/Please_enter_your_opinion"
         android:paddingLeft="15dp"
         android:paddingTop="15dp"
+        android:textColor="@color/white"
         android:textColorHint="@color/txt_646464"
         android:textSize="17dp" />
 
