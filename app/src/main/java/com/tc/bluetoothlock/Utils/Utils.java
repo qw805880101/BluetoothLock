@@ -40,7 +40,7 @@ public class Utils {
      * @return
      */
     public static Map getHeaderData() {
-        String timestamp = "" + (new Date().getTime() / 1000);
+        String timestamp = "" + (new Date().getTime());
         String certification = getCertification(timestamp);
         Map requestData = new HashMap();
         requestData.put("version", "1.0"); //接口版本号
