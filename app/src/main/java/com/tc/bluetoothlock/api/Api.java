@@ -4,8 +4,11 @@ import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.bean.LockInfo;
 import com.tc.bluetoothlock.bean.LoginInfo;
 
+import java.util.Map;
+
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import rx.Observable;
 
@@ -45,7 +48,7 @@ public interface Api {
      * @return
      */
     @POST("user/login")
-    Observable<BaseBeanInfo<LoginInfo>> login(@Body RequestBody file);
+    Observable<BaseBeanInfo<LoginInfo>> login(@HeaderMap Map<String, String> headers, @Body RequestBody file);
 //
 //    /**
 //     * 获取验证码

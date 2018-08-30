@@ -16,7 +16,9 @@ import me.jessyan.autosize.AutoSizeConfig;
 public class MyApplication extends WRCoreApp {
 
 //    public static String URL = "http://c.99bicycle.com:20001/";
-    public static String URL = "http://ehome.kira666.com:20001/EhomePro/";
+    public static String URL = "http://ehome.kira666.com:20001/";
+
+    public static String apiKey = "402880496058fbb7016058fc201e0009";
 
     @Override
     public void onCreate() {

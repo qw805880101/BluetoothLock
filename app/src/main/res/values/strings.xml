@@ -67,7 +67,13 @@
     <!-- 意见反馈 -->
     <string name="Please_enter_your_opinion">请输入您的意见</string>
 
-
+    <!-- 锁界面 -->
+    <string name="Connection">连接中...</string>
+    <string name="Unlocking_success">开锁成功</string>
+    <string name="Click_unlock">点击开锁</string>
+    <string name="password_setting">密码设置</string>
+    <string name="Fingerprint_setting">指纹设置</string>
+    <string name="WIFI_configuration">WIFI配置</string>
 
 
 </resources>
