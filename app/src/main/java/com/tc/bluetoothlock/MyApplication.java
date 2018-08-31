@@ -5,6 +5,7 @@ import android.os.StrictMode;
 
 import com.psylife.wrmvplibrary.WRCoreApp;
 import com.psylife.wrmvplibrary.utils.LogUtil;
+import com.tc.bluetoothlock.bean.LoginInfo;
 import com.tencent.smtt.sdk.QbSdk;
 
 import me.jessyan.autosize.AutoSizeConfig;
@@ -15,10 +16,12 @@ import me.jessyan.autosize.AutoSizeConfig;
 
 public class MyApplication extends WRCoreApp {
 
-//    public static String URL = "http://c.99bicycle.com:20001/";
+    //    public static String URL = "http://c.99bicycle.com:20001/";
     public static String URL = "http://ehome.kira666.com:20001/";
 
     public static String apiKey = "402880496058fbb7016058fc201e0009";
+
+    public static LoginInfo mLoginInfo;
 
     @Override
     public void onCreate() {

@@ -47,6 +47,7 @@
         android:background="@color/bg_4a505f" />
 
     <LinearLayout
+        android:id="@+id/lin_nick_name"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/bg_23262d"

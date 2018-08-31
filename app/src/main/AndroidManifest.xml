@@ -67,6 +67,18 @@
         <activity
             android:name=".activity.LockInfoActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AllModifyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.PasswordListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FingerprintListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AddFingerprintActivity"
+            android:screenOrientation="portrait" />
         <meta-data
             android:name="design_width_in_dp"
             android:value="360"/>

@@ -37,6 +37,7 @@ import com.psylife.wrmvplibrary.utils.TitleBuilder;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.bluetoothlock.R;
+import com.tc.bluetoothlock.Utils.Utils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BLEUtils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BluetoothReceiver;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDUtils;
@@ -191,7 +192,7 @@ public class MainActivity extends BaseActivity implements SearchBluetoothInterfa
         Map map = new HashMap();
         map.put("lockNo", lockNo);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSON.toJSONString(map));
-        Observable<BaseBeanInfo<LockInfo>> getLockInfo = mApi.getLockInfo(requestBody).compose(RxUtil.<BaseBeanInfo<LockInfo>>rxSchedulerHelper());
+        Observable<BaseBeanInfo<LockInfo>> getLockInfo = mApi.getLockInfo(Utils.getHeaderData(), requestBody).compose(RxUtil.<BaseBeanInfo<LockInfo>>rxSchedulerHelper());
         mRxManager.add(getLockInfo.subscribe(new Action1<BaseBeanInfo<LockInfo>>() {
             @Override
             public void call(BaseBeanInfo<LockInfo> info) {

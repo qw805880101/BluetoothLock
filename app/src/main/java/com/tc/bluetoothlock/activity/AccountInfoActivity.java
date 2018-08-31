@@ -20,8 +20,10 @@ import com.psylife.wrmvplibrary.utils.TakePhotosDispose;
 import com.psylife.wrmvplibrary.utils.TitleBuilder;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
+import com.tc.bluetoothlock.MyApplication;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.Utils.DialogUtil;
+import com.tc.bluetoothlock.Utils.Utils;
 import com.tc.bluetoothlock.base.BaseActivity;
 import com.tc.bluetoothlock.view.TitleView;
 
@@ -38,6 +40,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 import static android.os.Build.VERSION_CODES.M;
+import static com.tc.bluetoothlock.activity.AllModifyActivity.INTENT_KEY;
 import static com.tc.bluetoothlock.activity.MainActivity.EXTERNAL_STORAGE_REQ_CAMERA_CODE;
 
 public class AccountInfoActivity extends BaseActivity {
@@ -76,16 +79,27 @@ public class AccountInfoActivity extends BaseActivity {
 
     @Override
     public void initdata() {
-
+        Utils.loadHeadIcon(this, MyApplication.mLoginInfo.getHeadPicUrl(), mIvHead);
+        mTxtUserName.setText(MyApplication.mLoginInfo.getNickname());
+        mTxtMobile.setText(MyApplication.mLoginInfo.getPhone());
     }
 
-    @OnClick({R.id.iv_head, R.id.txt_user_name, R.id.txt_mobile})
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mTxtUserName.setText(MyApplication.mLoginInfo.getNickname());
+    }
+
+    @OnClick({R.id.iv_head, R.id.lin_nick_name, R.id.txt_mobile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_head:
                 startTakePhoto();
                 break;
-            case R.id.txt_user_name:
+            case R.id.lin_nick_name:
+                Intent intent = new Intent(this, AllModifyActivity.class);
+                intent.putExtra(AllModifyActivity.INTENT_KEY, AllModifyActivity.MODIFY_NAME);
+                startActivity(intent);
                 break;
             case R.id.txt_mobile:
                 break;

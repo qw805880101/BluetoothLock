@@ -24,7 +24,7 @@ public interface Api {
      * @return
      */
     @POST("get/lockInfo")
-    Observable<BaseBeanInfo<LockInfo>> getLockInfo(@Body RequestBody file);
+    Observable<BaseBeanInfo<LockInfo>> getLockInfo(@HeaderMap Map<String, String> headers, @Body RequestBody file);
 
     /**
      * 注册
@@ -32,7 +32,7 @@ public interface Api {
      * @return
      */
     @POST("user/register")
-    Observable<BaseBeanInfo> register(@Body RequestBody file);
+    Observable<BaseBeanInfo> register(@HeaderMap Map<String, String> headers, @Body RequestBody file);
 
     /**
      * 发送短信验证码
@@ -40,7 +40,7 @@ public interface Api {
      * @return
      */
     @POST("user/verificationCode")
-    Observable<BaseBeanInfo> getVerifyingCode(@Body RequestBody file);
+    Observable<BaseBeanInfo> getVerifyingCode(@HeaderMap Map<String, String> headers, @Body RequestBody file);
 
     /**
      * 登录
@@ -49,6 +49,14 @@ public interface Api {
      */
     @POST("user/login")
     Observable<BaseBeanInfo<LoginInfo>> login(@HeaderMap Map<String, String> headers, @Body RequestBody file);
+
+    /**
+     * 修改昵称
+     *
+     * @return
+     */
+    @POST("user/modify/nickName")
+    Observable<BaseBeanInfo<LoginInfo>> modifyNickName(@HeaderMap Map<String, String> headers, @Body RequestBody file);
 //
 //    /**
 //     * 获取验证码

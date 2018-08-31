@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.psylife.wrmvplibrary.utils.StatusBarUtil;
+import com.tc.bluetoothlock.MyApplication;
 import com.tc.bluetoothlock.R;
+import com.tc.bluetoothlock.Utils.Utils;
 import com.tc.bluetoothlock.base.BaseActivity;
 import com.tc.bluetoothlock.view.TitleView;
 
@@ -51,7 +53,9 @@ public class AccountActivity extends BaseActivity {
 
     @Override
     public void initdata() {
-
+        Utils.loadHeadIcon(this, MyApplication.mLoginInfo.getHeadPicUrl(), mIvHead);
+        mTxtName.setText(MyApplication.mLoginInfo.getNickname());
+        mTxtMobile.setText(MyApplication.mLoginInfo.getPhone());
     }
 
     @OnClick({R.id.iv_head, R.id.lin_open_lock_info, R.id.lin_guide_to_use, R.id.lin_update, R.id.lin_set})

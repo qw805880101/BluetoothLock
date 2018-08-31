@@ -12,6 +12,7 @@ import com.psylife.wrmvplibrary.utils.StatusBarUtil;
 import com.psylife.wrmvplibrary.utils.StringUtils;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
+import com.tc.bluetoothlock.MyApplication;
 import com.tc.bluetoothlock.R;
 import com.tc.bluetoothlock.Utils.Utils;
 import com.tc.bluetoothlock.base.BaseActivity;
@@ -113,8 +114,13 @@ public class LoginActivity extends BaseActivity {
             public void call(BaseBeanInfo<LoginInfo> info) {
                 stopProgressDialog();
                 if (info.getCode() == 200) {
-                    startActivity(new Intent(mContext, MainActivity.class));
-                    finish();
+                    MyApplication.mLoginInfo = info.getData();
+                    if (MyApplication.mLoginInfo.getAccountStatus() == 0) {
+                        startActivity(new Intent(mContext, MainActivity.class));
+                        finish();
+                    } else {
+                        ToastUtils.showToast(mContext, "账户已被禁用，请联系客服");
+                    }
                 } else {
                     toastMessage("" + info.getCode(), info.getMsg());
                 }

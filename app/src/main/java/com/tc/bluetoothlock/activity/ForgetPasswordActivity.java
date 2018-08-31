@@ -13,6 +13,7 @@ import com.psylife.wrmvplibrary.utils.StringUtils;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.psylife.wrmvplibrary.utils.helper.RxUtil;
 import com.tc.bluetoothlock.R;
+import com.tc.bluetoothlock.Utils.Utils;
 import com.tc.bluetoothlock.base.BaseActivity;
 import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.view.TitleView;
@@ -103,7 +104,7 @@ public class ForgetPasswordActivity extends BaseActivity {
         Map map = new HashMap();
         map.put("phone", phoneNumber);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSON.toJSONString(map));
-        Observable<BaseBeanInfo> register = mApi.getVerifyingCode(requestBody).compose(RxUtil.<BaseBeanInfo>rxSchedulerHelper());
+        Observable<BaseBeanInfo> register = mApi.getVerifyingCode(Utils.getHeaderData(), requestBody).compose(RxUtil.<BaseBeanInfo>rxSchedulerHelper());
         mRxManager.add(register.subscribe(new Action1<BaseBeanInfo>() {
             @Override
             public void call(BaseBeanInfo info) {
@@ -205,7 +206,7 @@ public class ForgetPasswordActivity extends BaseActivity {
 //        map.put("deviceId", deviceId);
 //        map.put("mac", mac);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSON.toJSONString(map));
-        Observable<BaseBeanInfo> register = mApi.register(requestBody).compose(RxUtil.<BaseBeanInfo>rxSchedulerHelper());
+        Observable<BaseBeanInfo> register = mApi.register(Utils.getHeaderData(), requestBody).compose(RxUtil.<BaseBeanInfo>rxSchedulerHelper());
         mRxManager.add(register.subscribe(new Action1<BaseBeanInfo>() {
             @Override
             public void call(BaseBeanInfo info) {

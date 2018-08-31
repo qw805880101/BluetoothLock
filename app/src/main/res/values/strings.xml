@@ -20,7 +20,7 @@
 
     <!-- 登录 -->
     <string name="phone_number">请输入手机号</string>
-    <string name="password">请输入密码</string>
+    <string name="Please_input_password">请输入密码</string>
     <string name="login">登录</string>
     <string name="forget_password">忘记密码？</string>
     <string name="register">新用户注册</string>
@@ -30,7 +30,6 @@
     <string name="sure_new_password">请确认新密码</string>
     <string name="verifying_code">请输入验证码</string>
     <string name="get_the_verifying_code">获取验证码</string>
-    <string name="confirm">确定</string>
     <string name="Forget_the_password">忘记密码</string>
 
     <!-- 注册 -->
@@ -75,5 +74,30 @@
     <string name="Fingerprint_setting">指纹设置</string>
     <string name="WIFI_configuration">WIFI配置</string>
 
+    <!-- 修改界面 -->
+    <string name="complete">完成</string>
+    <string name="Modify_the_nickname">修改昵称</string>
+    <string name="Please_enter_a_new_nickname">请输入新的昵称</string>
+    <string name="Add_password">添加密码</string>
+    <string name="modify_password">修改密码</string>
+    <string name="password">密&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;码：</string>
+    <string name="password_name">密码名称：</string>
+    <string name="Please_input_password_name">请输入密码名称</string>
+    <string name="Password_addition_failed_Do_you_want_to_reset_the_password">密码添加失败，是否重设密码？</string>
+    <string name="Click_fingerprints">点击添加指纹</string>
+    <string name="Add_in">添加中...</string>
+    <string name="Add_fingerprints">添加指纹</string>
+    <string name="Fingerprints_name">指纹名称：</string>
+    <string name="Please_input_fingerprints_name">请输入指纹名称</string>
+    <string name="Fingerprints_addition_failed_Do_you_want_to_reset_add">指纹添加失败，是否重新添加？</string>
+    <string name="wifi_name">WIFI名称：</string>
+    <string name="wifi_password">WIFI密码：</string>
+    <string name="Please_input_wifi_name">请输入wifi名称</string>
+    <string name="Please_input_wifi_password">请输入wifi名称密码</string>
+
+
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="tips">提示</string>
 
 </resources>
