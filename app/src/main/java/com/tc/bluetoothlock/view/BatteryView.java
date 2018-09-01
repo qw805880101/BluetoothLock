@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -67,15 +68,28 @@ public class BatteryView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Bitmap bitmap = setImgSize(mTotalWidth, mTotalHeight);
-        mSrcRect = new Rect(0, 0, bitmap.getWidth(), mTotalHeight);
-        mDestRect = new Rect(0, 0, bitmap.getWidth(), mTotalHeight);
-        canvas.drawBitmap(bitmap, mSrcRect, mDestRect, mPaint);
-        int a = (int) (battery / 100.0 * bitmap.getWidth());
-        mPaint.setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.txt_1d79ea), PorterDuff.Mode.SRC_IN));
-        mSrcRect = new Rect(0, 0, a, mTotalHeight);
-        mDestRect = new Rect(0, 0, a, mTotalHeight);
-        canvas.drawBitmap(bitmap, mSrcRect, mDestRect, mPaint);
+
+        float maxBattery = mTotalWidth - 30;
+
+        mPaint.setColor(getResources().getColor(R.color.txt_646464));
+        canvas.drawRoundRect(new RectF(0, 0, maxBattery, mTotalHeight), 10, 10, mPaint);
+
+
+        mPaint.setColor(Color.WHITE);
+        canvas.drawRoundRect(new RectF(maxBattery, mTotalHeight / 4, maxBattery + 10, mTotalHeight / 2 + mTotalHeight / 4), 10, 10, mPaint);
+
+        mPaint.setColor(getResources().getColor(R.color.txt_1d79ea));
+        canvas.drawRoundRect(new RectF(5, 5, (float) (battery / 100.0 * maxBattery) - 5, mTotalHeight - 5), 10, 10, mPaint);
+
+//        Bitmap bitmap = setImgSize(mTotalWidth, mTotalHeight);
+//        mSrcRect = new Rect(0, 0, bitmap.getWidth(), mTotalHeight);
+//        mDestRect = new Rect(0, 0, bitmap.getWidth(), mTotalHeight);
+//        canvas.drawBitmap(bitmap, mSrcRect, mDestRect, mPaint);
+//        int a = (int) (battery / 100.0 * bitmap.getWidth());
+//        mPaint.setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.txt_1d79ea), PorterDuff.Mode.SRC_IN));
+//        mSrcRect = new Rect(0, 0, a, mTotalHeight);
+//        mDestRect = new Rect(0, 0, a, mTotalHeight);
+//        canvas.drawBitmap(bitmap, mSrcRect, mDestRect, mPaint);
     }
 
     public int getW() {

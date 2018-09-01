@@ -27,12 +27,12 @@ public class LockAdapter extends BaseQuickAdapter<LockInfo, BaseViewHolder> {
 
         BatteryView mBatteryView = helper.getView(R.id.battery);
 
-        int battery = (int) (Math.random() * 120);
+        int battery = (int) (Math.random() * 100);
 
-        mBatteryView.setBattery(80);
+        mBatteryView.setBattery(battery);
 
         TextView txtBattery = helper.getView(R.id.txt_battery);
-        txtBattery.setText(item.getId() + "%");
+        txtBattery.setText(battery + "%");
 
         LinearLayout lockItem = helper.getView(R.id.lin_lock_item);
         lockItem.setOnClickListener(new OnClickListener() {

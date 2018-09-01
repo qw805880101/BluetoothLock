@@ -68,6 +68,7 @@
 
     <!-- 锁界面 -->
     <string name="Connection">连接中...</string>
+    <string name="Connection_success">连接成功</string>
     <string name="Unlocking_success">开锁成功</string>
     <string name="Click_unlock">点击开锁</string>
     <string name="password_setting">密码设置</string>

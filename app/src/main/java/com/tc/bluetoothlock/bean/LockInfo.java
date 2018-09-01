@@ -1,6 +1,8 @@
 package com.tc.bluetoothlock.bean;
 
-public class LockInfo {
+import java.io.Serializable;
+
+public class LockInfo implements Serializable{
 
     /**
      *
