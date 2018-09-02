@@ -23,7 +23,7 @@ public interface Api {
      *
      * @return
      */
-    @POST("get/lockInfo")
+    @POST("lock/get/lockInfo")
     Observable<BaseBeanInfo<LockInfo>> getLockInfo(@HeaderMap Map<String, String> headers, @Body RequestBody file);
 
     /**
@@ -57,6 +57,18 @@ public interface Api {
      */
     @POST("user/modify/nickName")
     Observable<BaseBeanInfo<LoginInfo>> modifyNickName(@HeaderMap Map<String, String> headers, @Body RequestBody file);
+
+    /**
+     * 获取锁列表
+     *
+     * @return
+     */
+    @POST("lock/get/lockInfos")
+    Observable<BaseBeanInfo<LoginInfo>> getLockInfoList(@HeaderMap Map<String, String> headers, @Body RequestBody file);
+
+
+
+
 //
 //    /**
 //     * 获取验证码

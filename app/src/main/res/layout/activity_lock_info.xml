@@ -28,11 +28,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_15">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@mipmap/tips_bg_02" />
+            <ProgressBar
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:indeterminateDrawable="@drawable/connertion"/>
 
             <ImageView
                 android:layout_width="wrap_content"

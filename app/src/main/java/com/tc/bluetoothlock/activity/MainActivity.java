@@ -18,6 +18,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,8 +61,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     LinearLayout mLinAddLock;
     @BindView(R.id.txt_hint)
     TextView txt_hint;
+    @BindView(R.id.image_click_lock)
+    ImageView imageClick;
+    @BindView(R.id.txt_click_lock)
+    TextView txtClick;
 
     private LockAdapter mLockAdapter;
+
+    private List<LockInfo> lockInfos;
 
     @Override
     public View getTitleView() {
@@ -79,17 +86,18 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         initTitle();
 
         mLinAddLock.setOnClickListener(this);
+        imageClick.setOnClickListener(this);
+        txtClick.setOnClickListener(this);
 
-        List<LockInfo> lockInfos = new ArrayList<>();
+        lockInfos = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
-            LockInfo lockInfo = new LockInfo();
-            lockInfo.setId("" + i * 10);
-            lockInfos.add(lockInfo);
-        }
+//        for (int i = 0; i < 3; i++) {
+//            LockInfo lockInfo = new LockInfo();
+//            lockInfo.setId("" + i * 10);
+//            lockInfos.add(lockInfo);
+//        }
         mLockAdapter = new LockAdapter(lockInfos);
 
-        mLinAddLock.setVisibility(View.GONE);
         mLockList.setLayoutManager(new LinearLayoutManager(this));
         mLockList.addItemDecoration(new InterestSpaceItemDecorationList(40));
         mLockList.setAdapter(mLockAdapter);
@@ -97,12 +105,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
     @Override
     public void initdata() {
+        getLockInfoList();
     }
 
     @Override
     public void onClick(View view) {
-        if (view == mLinAddLock) {
-            requestCameraPerm();
+        if (view.getId() == R.id.image_click_lock || view.getId() == R.id.txt_click_lock) {
+//            requestCameraPerm();
+            start("100000000");
         }
 
         if (view == mTitleView.getIvLeft()) {
@@ -111,9 +121,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
         }
 
         if (view == mTitleView.getIvRight()) {
-            ToastUtils.showToast(this, "点我弄啥~");
-//            requestCameraPerm();
-            start("100000000");
+//            ToastUtils.showToast(this, "点我弄啥~");
+            requestCameraPerm();
+//            start("100000000");
         }
     }
 
@@ -173,6 +183,30 @@ public class MainActivity extends BaseActivity implements OnClickListener {
             String result = data.getStringExtra("result");
             start(result);
         }
+    }
+
+    /**
+     * 获取锁列表参数
+     */
+    private void getLockInfoList() {
+        startProgressDialog(this);
+        Map map = new HashMap();
+        map.put("currPage", 1);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSON.toJSONString(map));
+        Observable<BaseBeanInfo<LockInfo>> getLockInfo = mApi.getLockInfoList(Utils.getHeaderData(), requestBody).compose(RxUtil.<BaseBeanInfo<LockInfo>>rxSchedulerHelper());
+        mRxManager.add(getLockInfo.subscribe(new Action1<BaseBeanInfo<LockInfo>>() {
+            @Override
+            public void call(BaseBeanInfo<LockInfo> info) {
+                stopProgressDialog();
+                if (info.getCode() == 200 && info.getMsg().equals("SUCCESS")) {
+
+                    mLinAddLock.setVisibility(View.GONE);
+
+                } else {
+                    toastMessage("" + info.getCode(), info.getMsg());
+                }
+            }
+        }, this));
     }
 
     /**
