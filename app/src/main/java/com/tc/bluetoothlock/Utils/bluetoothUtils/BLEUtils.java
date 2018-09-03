@@ -49,9 +49,10 @@ public class BLEUtils {
             if (mBluetoothAdapter.isEnabled()) {
                 if (device != null && mac.equals(device.getAddress())) {
                     //链接蓝牙
-                    Intent mBleService = new Intent(activity, TestService.class);
-                    mBleService.putExtra(TestService.BLUETOOTH_CONNECT_DEVICE, device);
-                    activity.startService(mBleService);
+//                    Intent mBleService = new Intent(activity, TestService.class);
+//                    mBleService.putExtra(TestService.BLUETOOTH_CONNECT_DEVICE, device);
+//                    activity.startService(mBleService);
+                    mSearchBluetoothInterface.searchSuccess(device);
                 } else {
                     //开始搜索蓝牙
                     startLeScan(activity, mLeScanCallback);

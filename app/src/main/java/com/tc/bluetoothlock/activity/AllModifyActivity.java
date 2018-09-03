@@ -20,6 +20,8 @@ import com.tc.bluetoothlock.Utils.Utils;
 import com.tc.bluetoothlock.base.BaseActivity;
 import com.tc.bluetoothlock.bean.BaseBeanInfo;
 import com.tc.bluetoothlock.bean.LoginInfo;
+import com.tc.bluetoothlock.view.CustomDialog;
+import com.tc.bluetoothlock.view.CustomDialog.OnConfirmClickListener;
 import com.tc.bluetoothlock.view.TitleView;
 
 import java.util.HashMap;
@@ -33,7 +35,7 @@ import okhttp3.RequestBody;
 import rx.Observable;
 import rx.functions.Action1;
 
-public class AllModifyActivity extends BaseActivity {
+public class AllModifyActivity extends BaseActivity implements OnConfirmClickListener {
 
     public static final String INTENT_KEY = "intentType";
     public static final String PASSWORD_NAME = "passwordName";
@@ -45,6 +47,7 @@ public class AllModifyActivity extends BaseActivity {
     public static final int MODIFY_FINGERPRINT = 2; //指纹设置
     public static final int MODIFY_WIFI = 3; //WiFi配置
     public static final int ADD_PASSWORD = 4; //添加密码
+    public static final int MODIFY_LOCK_NAME = 7; //修改锁名称
 
     public static final int PASSWORD_STEP_01 = 5; //添加密码步骤 5：蓝牙添加密码，  6：上传密码名称
     public static final int PASSWORD_STEP_02 = 6; //添加密码步骤 5：蓝牙添加密码，  6：上传密码名称
@@ -67,6 +70,8 @@ public class AllModifyActivity extends BaseActivity {
     private int modifyType;
 
     private int passwordStep; // 密码步骤
+
+    private CustomDialog mCustomDialog;
 
     @Override
     public int getLayoutId() {
@@ -92,6 +97,11 @@ public class AllModifyActivity extends BaseActivity {
                 confirm();
             }
         });
+
+        mCustomDialog = new CustomDialog(this).builder();
+        mCustomDialog.setConfirmListener(this);
+        mCustomDialog.setCancelable(true);
+        mCustomDialog.setCanceledOnTouchOutside(true);
     }
 
     @Override
@@ -136,6 +146,7 @@ public class AllModifyActivity extends BaseActivity {
             mTitleView.setTitleText(this.getResources().getString(R.string.Add_fingerprints));
             mTitleView.setRightText(this.getResources().getString(R.string.complete));
             mTxtHint.setText(this.getResources().getString(R.string.Fingerprints_name));
+            mEtText.setHint(this.getResources().getString(R.string.Please_input_fingerprints_name));
         }
 
         if (modifyType == MODIFY_WIFI) {
@@ -148,6 +159,14 @@ public class AllModifyActivity extends BaseActivity {
             mEtText02.setText(intent.getStringExtra(PASSWORD) != null && !intent.getStringExtra(PASSWORD).equals("") ? intent.getStringExtra(PASSWORD) : "");
             mEtText02.setHint(this.getResources().getString(R.string.Please_input_wifi_password));
             mLinMod02.setVisibility(View.VISIBLE);
+        }
+
+        if (modifyType == MODIFY_LOCK_NAME) {
+            mTitleView.setTitleText(this.getResources().getString(R.string.Modify_Lock_name));
+            mTitleView.setRightText(this.getResources().getString(R.string.complete));
+            mTxtHint.setText(this.getResources().getString(R.string.Lock_name));
+            mEtText.setText(intent.getStringExtra(PASSWORD_NAME) != null && !intent.getStringExtra(PASSWORD_NAME).equals("") ? intent.getStringExtra(PASSWORD_NAME) : "");
+            mEtText.setHint(this.getResources().getString(R.string.Please_input_Lock_name));
         }
 
     }
@@ -184,6 +203,9 @@ public class AllModifyActivity extends BaseActivity {
             if (modifyType == MODIFY_FINGERPRINT) { //添加指纹
                 ToastUtils.showToast(this, this.getResources().getString(R.string.Please_input_fingerprints_name));
             }
+            if (modifyType == MODIFY_LOCK_NAME) { //修改锁名称
+                ToastUtils.showToast(this, this.getResources().getString(R.string.Please_input_Lock_name));
+            }
             return;
         }
 
@@ -200,11 +222,15 @@ public class AllModifyActivity extends BaseActivity {
             }
             if (passwordStep == PASSWORD_STEP_02) {
                 LogUtil.d("添加密码名称");
+                mCustomDialog.setMessage(this.getResources().getString(R.string.Password_addition_failed_Do_you_want_to_reset_the_password));
+                mCustomDialog.show();
             }
         }
         if (modifyType == MODIFY_FINGERPRINT) {
 //            modifyName(str);
             LogUtil.d("添加指纹");
+            mCustomDialog.setMessage(this.getResources().getString(R.string.Fingerprints_addition_failed_Do_you_want_to_reset_add));
+            mCustomDialog.show();
         }
     }
 
@@ -232,5 +258,13 @@ public class AllModifyActivity extends BaseActivity {
         }, this));
     }
 
+    @Override
+    public void onClickConfirm() {
 
+    }
+
+    @Override
+    public void onClickCancel() {
+
+    }
 }

@@ -14,12 +14,15 @@ import com.psylife.wrmvplibrary.utils.IntentUtils;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.psylife.wrmvplibrary.utils.ToastUtils;
 import com.tc.bluetoothlock.R;
+import com.tc.bluetoothlock.Utils.TestService;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.BLEUtils;
+import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDAPI;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDUtils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.SearchBluetoothInterface;
 import com.tc.bluetoothlock.base.BaseActivity;
 import com.tc.bluetoothlock.bean.LockInfo;
 import com.tc.bluetoothlock.helper.BaseViewHelper;
+import com.tc.bluetoothlock.view.CustomProgress;
 import com.tc.bluetoothlock.view.TitleView;
 import com.tc.bluetoothlock.view.WaveView;
 
@@ -45,9 +48,14 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
     TextView mTxtWifiSet;
     @BindView(R.id.rl_click_lock)
     RelativeLayout rlClickLock;
+    @BindView(R.id.custom_progress)
+    CustomProgress mCustomProgress;
 
     //是否搜索到锁
     boolean isSearchLock = false;
+
+    //是否已连接
+    boolean isConnection = false; //true 已连接  false 未连接
 
     @Override
     public int getLayoutId() {
@@ -74,7 +82,13 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
             }
         });
 
+        rlClickLock.setEnabled(false);
+        mTxtClickLock.setEnabled(false);
+
+        TestService.mSearchBluetoothInterface = this;
+
         BLEUtils.setSearchBluetoothInterface(this);
+        mCustomProgress.start();
     }
 
     @Override
@@ -96,6 +110,8 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
         mTxtFingerprintSet.setTextColor(this.getResources().getColor(R.color.white));
         mTxtWifiSet.setEnabled(true);
         mTxtWifiSet.setTextColor(this.getResources().getColor(R.color.white));
+        rlClickLock.setEnabled(true);
+        mTxtClickLock.setEnabled(true);
     }
 
     @OnClick({R.id.txt_click_lock, R.id.rl_click_lock, R.id.txt_password_set, R.id.txt_fingerprint_set, R.id.txt_wifi_set})
@@ -104,6 +120,22 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
         switch (view.getId()) {
             case R.id.rl_click_lock:
             case R.id.txt_click_lock:  //点击开锁
+
+                if (isConnection) {
+                    // 链接状态--BLE所有连接--连接成功--等待输入指令
+                    TestService.sendCmd(this, CMDAPI.OPEN_LOCK());
+                    LogUtil.d("发送指令--开锁");
+                } else {
+                    BLEUtils.openLockByBLE(this, mLockInfo.getLockBluetoothMac(), CMDUtils.hexStr(mLockInfo.getNewKey()), CMDUtils.hexSixteen(mLockInfo.getNewPassword()));
+                    mCustomProgress.start();
+                    mTxtState.setText(mContext.getResources().getString(R.string.Connection));
+                    mTxtState.setTextColor(mContext.getResources().getColor(R.color.white));
+                    mTxtClickLock.setVisibility(View.GONE);
+                    mTxtClickLock.setText(mContext.getResources().getString(R.string.Re_search));
+                    rlClickLock.setEnabled(false);
+                    mTxtClickLock.setEnabled(false);
+                }
+
                 break;
             case R.id.txt_password_set: //密码设置
                 intent = new Intent(this, PasswordListActivity.class);
@@ -136,7 +168,13 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
             bundle.putString("password", mLockInfo.getNewPassword());
             bundle.putString("lockKey", mLockInfo.getNewKey());
 
-            IntentUtils.startActivity(this, TestActivity.class, bundle);
+            // 链接状态--BLE所有连接--连接成功--等待输入指令
+            TestService.sendCmd(this, CMDAPI.GET_TOKEN());
+            LogUtil.d("发送指令--获取TOKEN");
+
+            isConnection = true;
+            openButton();
+//            IntentUtils.startActivity(this, TestActivity.class, bundle);
         }
     }
 
@@ -152,6 +190,16 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
         }
     }
 
+    /**
+     * @param cmdData  指令参数
+     * @param data     源参数
+     * @param respData 对应的数据
+     */
+    @Override
+    public void getResponseData(String cmdData, byte[] data, String respData) {
+        LogUtil.d("cmdData:" + cmdData + "\ndata:" + data + "\nrespData:" + respData);
+    }
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -159,6 +207,15 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
             if (msg.what == 0) {
                 ToastUtils.showToast(mContext, "未搜索到锁，请确认是否打开锁的蓝牙");
                 BLEUtils.stopLeScan(); //关闭蓝牙搜索
+                mTxtState.setText(mContext.getResources().getString(R.string.Unconnected));
+                mTxtState.setTextColor(mContext.getResources().getColor(R.color.txt_fe0505));
+                mTxtClickLock.setText(mContext.getResources().getString(R.string.Re_search));
+                mTxtClickLock.setVisibility(View.VISIBLE);
+                isConnection = false;
+                mCustomProgress.stop();
+                rlClickLock.setEnabled(true);
+                mTxtClickLock.setEnabled(true);
+                openButton();
             }
         }
     };
@@ -170,6 +227,7 @@ public class LockInfoActivity extends BaseActivity implements SearchBluetoothInt
      */
     private void setState(String state) {
         mTxtState.setText(state);
+        mTxtState.setTextColor(mContext.getResources().getColor(R.color.white));
     }
 
 }

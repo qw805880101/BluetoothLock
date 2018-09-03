@@ -17,6 +17,7 @@ import android.os.IBinder;
 import com.psylife.wrmvplibrary.utils.LogUtil;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.CMDUtils;
 import com.tc.bluetoothlock.Utils.bluetoothUtils.Config;
+import com.tc.bluetoothlock.Utils.bluetoothUtils.SearchBluetoothInterface;
 
 import java.util.Queue;
 import java.util.UUID;
@@ -34,6 +35,11 @@ public class TestService extends Service {
     UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
     UUID RBL_DEVICE_TX_UUID = UUID.fromString("000036f5-0000-1000-8000-00805f9b34fb");
     UUID CCC = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+
+    /**
+     * 设置参数返回回调接口
+     */
+    public static SearchBluetoothInterface mSearchBluetoothInterface;
 
     private static final String BROADCAST_BASE = "com.nokelock.y";
     /**
@@ -183,9 +189,9 @@ public class TestService extends Service {
         if (intent == null) {
             return START_STICKY;
         }
-        LogUtil.d( "onStartCommand");
+        LogUtil.d("onStartCommand");
         if (mBluetoothGatt == null) {
-            LogUtil.d( "mBluetoothGatt == null");
+            LogUtil.d("mBluetoothGatt == null");
             BluetoothDevice device = intent.getParcelableExtra(BLUETOOTH_CONNECT_DEVICE);
             mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
             sendStatusChange(CONNECT_STATE_GATT_CONNECTING);
@@ -203,13 +209,13 @@ public class TestService extends Service {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                LogUtil.d( "GATT通信链接成功");
+                LogUtil.d("GATT通信链接成功");
                 sendStatusChange(CONNECT_STATE_GATT_CONNECTED);
                 //连接成功后去发现该连接的设备的服务
                 mBluetoothGatt.discoverServices();
                 sendStatusChange(CONNECT_STATE_SERVICE_CONNECTING);
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {//连接失败 或者连接断开都会调用此方法
-                LogUtil.d( "连接失败或者连接断开");
+                LogUtil.d("连接失败或者连接断开");
                 sendStatusChange(CONNECT_STATE_DISCONNECTED);
                 TestService.this.stopSelf();
             }
@@ -225,7 +231,7 @@ public class TestService extends Service {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
-            LogUtil.d( "===搜到设备服务===");
+            LogUtil.d("===搜到设备服务===");
             if (status == BluetoothGatt.GATT_SUCCESS) {//发现该设备的服务
 //                //拿到该服务 1,通过UUID拿到指定的服务  2,可以拿到该设备上所有服务的集合
 //                List<BluetoothGattService> serviceList = mBluetoothGatt.getServices();
@@ -234,17 +240,17 @@ public class TestService extends Service {
 //                for (int x = 0; x < serviceList.size(); x++) {
 //                    Log.d(TAG, serviceList.get(x).getUuid().toString());
 //                }
-                LogUtil.d( "===找到设备服务，开始链接===");
+                LogUtil.d("===找到设备服务，开始链接===");
                 mDeviceService = mBluetoothGatt.getService(RBL_SERVICE);
                 if (mDeviceService != null) {
-                    LogUtil.d( "===设备链接成功===");
+                    LogUtil.d("===设备链接成功===");
                     sendStatusChange(CONNECT_STATE_SERVICE_CONNECTED);
                 } else {
-                    LogUtil.d( "===设备链接失败，结束操作===");
+                    LogUtil.d("===设备链接失败，结束操作===");
                     sendStatusChange(CONNECT_STATE_SERVICE_DISCONNECTED);
                     return;
                 }
-                LogUtil.d( "===获取命令响应和写入Character===");
+                LogUtil.d("===获取命令响应和写入Character===");
                 //通过UUID拿到设备里的Characteristic
 
 //                // 拿到该服务 1,通过UUID拿到指定的character  2,可以拿到该设备上所有服务的集合
@@ -258,25 +264,25 @@ public class TestService extends Service {
                 cmdWriteCharacter = mDeviceService.getCharacteristic(RBL_DEVICE_TX_UUID);
 
                 if (cmdWriteCharacter == null) {
-                    LogUtil.d( "===获取写入Character失败，程序结束===");
+                    LogUtil.d("===获取写入Character失败，程序结束===");
                     sendStatusChange(CONNECT_STATE_WRITE_DISCONNECTED);
                     return;
                 } else {
-                    LogUtil.d( "===获取写入Character成功===");
+                    LogUtil.d("===获取写入Character成功===");
                 }
                 sendStatusChange(CONNECT_STATE_RESPOND_CONNECTING);
                 cmdRespondCharacter = mDeviceService.getCharacteristic(RBL_DEVICE_RX_UUID);
                 if (cmdRespondCharacter == null) {
                     sendStatusChange(CONNECT_STATE_RESPOND_DISCONNECTED);
-                    LogUtil.d( "===获取响应Character失败，程序结束===");
+                    LogUtil.d("===获取响应Character失败，程序结束===");
                     return;
                 } else {
-                    LogUtil.d( "===获取响应Character成功===");
+                    LogUtil.d("===获取响应Character成功===");
                     enableNotification(true, mBluetoothGatt, cmdRespondCharacter);
                 }
 
             } else {//未发现该设备的服务
-                LogUtil.d( "===未发现设备服务===");
+                LogUtil.d("===未发现设备服务===");
             }
             super.onServicesDiscovered(gatt, status);
         }
@@ -296,7 +302,7 @@ public class TestService extends Service {
                 }
                 mBluetoothGatt.writeDescriptor(clientConfig);
             }
-            LogUtil.d( "=== enableNotification isWriting = true ===");
+            LogUtil.d("=== enableNotification isWriting = true ===");
 
             sendStatusChange(CONNECT_STATE_SUCCESS);
 //            try {
@@ -319,7 +325,7 @@ public class TestService extends Service {
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
-            LogUtil.d( "===配置指令写入完成===");
+            LogUtil.d("===配置指令写入完成===");
             sendStatusChange(CONNECT_STATE_SUCCESS);
 //            nextWrite();
         }
@@ -327,7 +333,7 @@ public class TestService extends Service {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
-            LogUtil.d( "===指令写入完成=== isWriting = false");
+            LogUtil.d("===指令写入完成=== isWriting = false");
         }
 
         /**被订阅的Characteristic的值要是改变 调用此方法
@@ -354,13 +360,13 @@ public class TestService extends Service {
 
 
         if (mBluetoothGatt == null) {
-            LogUtil.d( "异常 执行指令 mBluetoothGatt == null");
+            LogUtil.d("异常 执行指令 mBluetoothGatt == null");
             TestService.this.stopSelf();
             return;
         }
         if (cmdWriteCharacter == null) {
             TestService.this.stopSelf();
-            LogUtil.d( "异常 执行指令 cmdWriteCharacter == null");
+            LogUtil.d("异常 执行指令 cmdWriteCharacter == null");
             return;
         }
 
@@ -404,18 +410,18 @@ public class TestService extends Service {
         cmdWriteCharacter.setValue(data);
         if (mBluetoothGatt == null) {
             TestService.this.stopSelf();
-            LogUtil.d( "mBluetoothGatt == null");
+            LogUtil.d("mBluetoothGatt == null");
             return;
         }
         mBluetoothGatt.writeCharacteristic(cmdWriteCharacter);
 
-        LogUtil.d( "===执行指令===");
+        LogUtil.d("===执行指令===");
 
     }
 
     @Override
     public void onDestroy() {
-        LogUtil.d( "BluetoothService onDestroy");
+        LogUtil.d("BluetoothService onDestroy");
         super.onDestroy();
         if (broadcast_cmd != null) {
             unregisterReceiver(broadcast_cmd);
@@ -466,10 +472,10 @@ public class TestService extends Service {
     private void sendResultData(byte[] data) {
 
         String str_data = CMDUtils.toHexString(data);
-        LogUtil.d( "===获取到响应数据=== " + str_data);
+        LogUtil.d("===获取到响应数据=== " + str_data);
 
-        if (str_data.substring(0, 4).equals("0602")){
-            Config.TOKEN= new byte[]{data[3], data[4], data[5], data[6]};
+        if (str_data.substring(0, 4).equals("0602")) {
+            Config.TOKEN = new byte[]{data[3], data[4], data[5], data[6]};
         }
 
         String cmd = str_data.substring(0, 4);
@@ -479,6 +485,10 @@ public class TestService extends Service {
         intent.putExtra(BROADCAST_DATA_BYTE, data);
         intent.putExtra(BROADCAST_DATA_VALUE, str_data);
         sendBroadcast(intent);
+
+        if (mSearchBluetoothInterface != null){
+            mSearchBluetoothInterface.getResponseData(cmd, data, str_data);
+        }
     }
 
 

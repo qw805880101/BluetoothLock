@@ -7,12 +7,16 @@
 
     <color name="bg_23262d">#23262d</color>
     <color name="bg_151519">#151519</color>
+    <color name="bg_002652">#002652</color>
+    <color name="bg_23262D">#23262D</color>
+    <color name="bg_858585">#858585</color>
     <color name="bg_444444">#444444</color>
     <color name="bg_0577fe">#0577fe</color>
     <color name="bg_4a505f">#4a505f</color>
     <color name="txt_1d79ea">#1d79ea</color>
     <color name="txt_0577fe">#0577fe</color>
     <color name="txt_646464">#646464</color>
+    <color name="txt_fe0505">#fe0505</color>
 
     <color name="text">#00FFFF</color>
 

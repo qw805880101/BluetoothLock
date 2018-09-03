@@ -69,6 +69,9 @@
     <!-- 锁界面 -->
     <string name="Connection">连接中...</string>
     <string name="Connection_success">连接成功</string>
+    <string name="Connection_fail">连接失败</string>
+    <string name="Unconnected">未连接</string>
+    <string name="Re_search">重新搜索</string>
     <string name="Unlocking_success">开锁成功</string>
     <string name="Click_unlock">点击开锁</string>
     <string name="password_setting">密码设置</string>
@@ -95,6 +98,14 @@
     <string name="wifi_password">WIFI密码：</string>
     <string name="Please_input_wifi_name">请输入wifi名称</string>
     <string name="Please_input_wifi_password">请输入wifi名称密码</string>
+    <string name="Modify_Lock_name">修改锁名称</string>
+    <string name="Lock_name">锁名称：</string>
+    <string name="Please_input_Lock_name">请输入锁名称</string>
+
+    <!-- 锁设置 -->
+    <string name="Lock_set">锁设置</string>
+    <string name="Modify_lock_name">修改锁名称</string>
+    <string name="Unlock_binding">解除锁绑定</string>
 
 
     <string name="confirm">确定</string>
